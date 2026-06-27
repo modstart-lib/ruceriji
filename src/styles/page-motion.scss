@@ -1,0 +1,66 @@
+/* 全站页面轻量入场动效
+ * 微信小程序（WXSS）与 uni-app 独立 App（WKWebView / 系统 WebView）均走 CSS 动画；
+ * 同步提供标准与 -webkit- 前缀，避免部分端只认其一导致无动画或闪烁。 */
+
+@mixin page-motion-fade-up-keyframes-body {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 24rpx, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@-webkit-keyframes page-motion-fade-up {
+  @include page-motion-fade-up-keyframes-body;
+}
+
+@keyframes page-motion-fade-up {
+  @include page-motion-fade-up-keyframes-body;
+}
+
+$page-motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+$page-motion-dur: 0.52s;
+
+@mixin page-motion-shorthand($delay: 0s) {
+  -webkit-animation: page-motion-fade-up $page-motion-dur $page-motion-ease $delay both;
+  animation: page-motion-fade-up $page-motion-dur $page-motion-ease $delay both;
+}
+
+.page-motion-t1 {
+  @include page-motion-shorthand(0s);
+}
+
+.page-motion-t2 {
+  @include page-motion-shorthand(0.1s);
+}
+
+.page-motion-t3 {
+  @include page-motion-shorthand(0.18s);
+}
+
+.page-motion-t4 {
+  @include page-motion-shorthand(0.26s);
+}
+
+.page-motion-t5 {
+  @include page-motion-shorthand(0.34s);
+}
+
+/* 小程序部分基础库对 prefers-reduced-motion 无感知，规则不生效时无副作用 */
+@media (prefers-reduced-motion: reduce) {
+  .page-motion-t1,
+  .page-motion-t2,
+  .page-motion-t3,
+  .page-motion-t4,
+  .page-motion-t5 {
+    -webkit-animation: none !important;
+    animation: none !important;
+    opacity: 1;
+    -webkit-transform: none;
+    transform: none;
+  }
+}

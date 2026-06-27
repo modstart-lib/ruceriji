@@ -1,0 +1,10 @@
+node_modules
+dist
+unpackage
+*.d.ts
+src/androidPrivacy.json
+src/manifest.json
+res/
+src/brick/bui/bui-image-design/xinyu-canvas-drawer/
+src/icons/
+src/brick/uni/

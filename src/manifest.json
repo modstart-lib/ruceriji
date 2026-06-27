@@ -1,0 +1,277 @@
+{
+    "name" : "如厕日记",
+    "appid" : "__UNI__FB611B1",
+    "description" : "如厕日记",
+    "versionName" : "0.7.91",
+    "versionCode" : 791,
+    "transformPx" : false,
+    /* 5+App特有相关 */
+    "app-plus" : {
+        "compatible" : {
+            "ignoreVersion" : true
+        },
+        "error" : {
+            "url" : "static/error.html"
+        },
+        "runmode" : "liberate",
+        "usingComponents" : true,
+        "nvueStyleCompiler" : "uni-app",
+        "compilerVersion" : 3,
+        "statusbar" : {
+            "immersed" : true
+        },
+        /* 模块配置 */
+        "modules" : {
+            "VideoPlayer" : {},
+            "OAuth" : {},
+            "Camera" : {}
+        },
+        "softinput" : {
+            "mode" : "adjustPan"
+        },
+        "splashscreen" : {
+            "alwaysShowBeforeRender" : false,
+            "waiting" : false,
+            "autoclose" : true,
+            "delay" : 0
+        },
+        /* 应用发布信息 */
+        "distribute" : {
+            /* android打包配置 */
+            "android" : {
+                "packagename" : "com.ruceriji",
+                "permissions" : [
+                    "<uses-feature android:name=\"android.hardware.camera\"/>",
+                    "<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_LOCATION_EXTRA_COMMANDS\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.CALL_PHONE\"/>",
+                    "<uses-permission android:name=\"android.permission.CAMERA\"/>",
+                    "<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
+                    "<uses-permission android:name=\"android.permission.GET_ACCOUNTS\"/>",
+                    "<uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\"/>",
+                    "<uses-permission android:name=\"android.permission.MOUNT_UNMOUNT_FILESYSTEMS\"/>",
+                    "<uses-permission android:name=\"android.permission.READ_CONTACTS\"/>",
+                    "<uses-permission android:name=\"android.permission.READ_LOGS\"/>",
+                    "<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>",
+                    "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
+                    "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
+                    "<uses-permission android:name=\"android.permission.WRITE_CONTACTS\"/>",
+                    "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
+                ],
+                "abiFilters" : [ "armeabi-v7a", "arm64-v8a", "x86" ],
+                "targetSdkVersion" : 30
+            },
+            /* ios打包配置 */
+            "ios" : {
+                "bundleid" : "com.ruceriji",
+                "urltypes" : "",
+                "idfa" : false,
+                "dSYMs" : false,
+                "privacyDescription": {         //可选，JSON对象，iOS隐私信息访问的许可描述
+                    "NSPhotoLibraryUsageDescription": "用于保存用户成就分享海报",                       //可选，字符串类型，系统相册读取权限描述
+                    "NSPhotoLibraryAddUsageDescription": "用于保存用户成就分享海报",                    //可选，字符串类型，系统相册写入权限描述
+                    "NSCameraUsageDescription": "用于拍摄用户便便信息用于数据分析",                      //可选，字符串类型，摄像头使用权限描述
+                    "NSMicrophoneUsageDescription": "",                         //可选，字符串类型，麦克风使用权限描述
+                    "NSLocationWhenInUseUsageDescription": "",                  //可选，字符串类型，运行期访问位置权限描述
+                    "NSLocationAlwaysUsageDescription": "",                     //可选，字符串类型，后台运行访问位置权限描述
+                    "NSLocationAlwaysAndWhenInUseUsageDescription": "",         //可选，字符串类型，运行期后后台访问位置权限描述
+                    "NSCalendarsUsageDescription": "",                          //可选，字符串类型，使用日历权限描述
+                    "NSContactsUsageDescription": "",                           //可选，字符串类型，使用通讯录权限描述
+                    "NSBluetoothPeripheralUsageDescription": "",                //可选，字符串类型，使用蓝牙权限描述
+                    "NSBluetoothAlwaysUsageDescription": "",                    //可选，字符串类型，后台使用蓝牙权限描述
+                    "NSSpeechRecognitionUsageDescription": "",                  //可选，字符串类型，系统语音识别权限描述
+                    "NSRemindersUsageDescription": "",                          //可选，字符串类型，系统提醒事项权限描述
+                    "NSMotionUsageDescription": "",                             //可选，字符串类型，使用运动与健康权限描述
+                    "NSHealthUpdateUsageDescription": "",                       //可选，字符串类型，使用健康更新权限描述
+                    "NSHealthShareUsageDescription": "",                        //可选，字符串类型，使用健康分享权限描述
+                    "NSAppleMusicUsageDescription": "",                         //可选，字符串类型，使用媒体资料库权限描述
+                    "NFCReaderUsageDescription": "",                            //可选，字符串类型，使用NFC权限描述
+                    "NSHealthClinicalHealthRecordsShareUsageDescription": "",   //可选，字符串类型，访问临床记录权限描述
+                    "NSHomeKitUsageDescription": "",                            //可选，字符串类型，访问HomeKit权限描述
+                    "NSSiriUsageDescription": "",                               //可选，字符串类型，访问Siri权限描述
+                    "NSFaceIDUsageDescription": "",                             //可选，字符串类型，使用FaceID权限描述
+                    "NSLocalNetworkUsageDescription": "",                       //可选，字符串类型，访问本地网络权限描述
+                    "NSUserTrackingUsageDescription": ""                        //可选，字符串类型，跟踪用户活动权限描述
+                }
+            },
+            /* SDK配置 */
+            "sdkConfigs" : {
+                "push" : {
+                    "unipush" : {}
+                },
+                "ad" : {},
+                "oauth" : {
+                    "weixin" : {
+                        "appid" : "",
+                        "UniversalLinks" : "https://ruceriji.com/app/"
+                    },
+                    "apple" : {}
+                }
+            },
+            "icons" : {
+                "android" : {
+                    "hdpi" : "unpackage/res/icons/72x72.png",
+                    "xhdpi" : "unpackage/res/icons/96x96.png",
+                    "xxhdpi" : "unpackage/res/icons/144x144.png",
+                    "xxxhdpi" : "unpackage/res/icons/192x192.png"
+                },
+                "ios" : {
+                    "appstore" : "unpackage/res/icons/1024x1024.png",
+                    "ipad" : {
+                        "app" : "unpackage/res/icons/76x76.png",
+                        "app@2x" : "unpackage/res/icons/152x152.png",
+                        "notification" : "unpackage/res/icons/20x20.png",
+                        "notification@2x" : "unpackage/res/icons/40x40.png",
+                        "proapp@2x" : "unpackage/res/icons/167x167.png",
+                        "settings" : "unpackage/res/icons/29x29.png",
+                        "settings@2x" : "unpackage/res/icons/58x58.png",
+                        "spotlight" : "unpackage/res/icons/40x40.png",
+                        "spotlight@2x" : "unpackage/res/icons/80x80.png"
+                    },
+                    "iphone" : {
+                        "app@2x" : "unpackage/res/icons/120x120.png",
+                        "app@3x" : "unpackage/res/icons/180x180.png",
+                        "notification@2x" : "unpackage/res/icons/40x40.png",
+                        "notification@3x" : "unpackage/res/icons/60x60.png",
+                        "settings@2x" : "unpackage/res/icons/58x58.png",
+                        "settings@3x" : "unpackage/res/icons/87x87.png",
+                        "spotlight@2x" : "unpackage/res/icons/80x80.png",
+                        "spotlight@3x" : "unpackage/res/icons/120x120.png"
+                    }
+                }
+            },
+            "splashscreen" : {
+                "androidTranslucent" : true,
+                "androidStyle" : "default",
+                "iosStyle" : "default",
+                "android" : {
+                    "hdpi" : "src/resource/splash.9.png",
+                    "xhdpi" : "src/resource/splash.9.png",
+                    "xxhdpi" : "src/resource/splash.9.png"
+                }
+            }
+        },
+        "nativePlugins" : {},
+        "nvueLaunchMode" : "",
+        "uniStatistics" : {
+            "enable" : false
+        }
+    },
+    /* 快应用特有相关 */
+    "quickapp" : {},
+    /* 小程序特有相关 */
+    "mp-weixin" : {
+        "appid" : "wx54068062a5a98d7c",
+        "setting" : {
+            "urlCheck" : false,
+            "minifyJS" : true
+        },
+        "mergeVirtualHostAttributes" : true,
+        "usingComponents" : true,
+        "permission" : {},
+        "optimization" : {
+            "subPackages" : true
+        },
+        "uniStatistics" : {
+            "enable" : false
+        }
+    },
+    "mp-alipay" : {
+        "usingComponents" : true,
+        "uniStatistics" : {
+            "enable" : false
+        }
+    },
+    "mp-baidu" : {
+        "usingComponents" : true,
+        "setting" : {
+            "urlCheck" : false
+        },
+        "uniStatistics" : {
+            "enable" : false
+        }
+    },
+    "mp-toutiao" : {
+        "usingComponents" : true,
+        "setting" : {
+            "urlCheck" : false
+        },
+        "uniStatistics" : {
+            "enable" : false
+        }
+    },
+    "h5" : {
+        "publicPath" : "__cdn_url__",
+        "template" : "brick/template/h5.html",
+        "title" : "如厕日记",
+        "router" : {
+            "base" : "/",
+            "mode" : "hash"
+        },
+        "optimization" : {
+            "treeShaking" : {
+                "enable" : true
+            }
+        },
+        "sdkConfigs" : {
+            "maps" : {
+                "qqmap" : {
+                    "key" : ""
+                }
+            }
+        },
+        "domain" : "com.ruceriji",
+        "devServer" : {
+            "port" : 21000
+        },
+        "uniStatistics" : {
+            "enable" : false
+        }
+    },
+    "mp-qq" : {
+        "setting" : {
+            "urlCheck" : false
+        },
+        "uniStatistics" : {
+            "enable" : false
+        }
+    },
+    "locale" : "zh-Hans",
+    "uniStatistics" : {
+        "version" : "2",
+        "enable" : false
+    },
+    "mp-jd" : {
+        "uniStatistics" : {
+            "enable" : false
+        }
+    },
+    "mp-kuaishou" : {
+        "uniStatistics" : {
+            "enable" : false
+        }
+    },
+    "mp-lark" : {
+        "uniStatistics" : {
+            "enable" : false
+        }
+    },
+    "quickapp-webview-huawei" : {
+        "uniStatistics" : {
+            "enable" : false
+        }
+    },
+    "quickapp-webview-union" : {
+        "uniStatistics" : {
+            "enable" : false
+        }
+    },
+    "vueVersion" : "3"
+}

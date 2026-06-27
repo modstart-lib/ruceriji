@@ -1,0 +1,21 @@
+name: Test
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+  notify:
+    name: Notify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Notify Webhook
+        run: |
+            NAME="${{ github.event.repository.name }}"
+            TYPE=$(echo "${{ github.workflow }}" | tr '[:upper:]' '[:lower:]')
+            VERSION=$(node -p "require('./package.json').version")
+            curl -X POST "${{ secrets.HOOK_URL }}" \
+              -H "Content-Type: application/json" \
+              -d "{\"event\":\"${NAME}\",\"param\":{\"name\":\"${NAME}\",\"type\":\"${TYPE}\",\"version\":\"${VERSION}\"},\"data\":{\"name\":\"${NAME}\",\"type\":\"${TYPE}\",\"version\":\"${VERSION}\"}}"

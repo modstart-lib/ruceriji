@@ -1,0 +1,44 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+.DS_Store
+dist
+*.local
+
+# Editor directories and files
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+/AGENTS.md
+_temp/
+.hbuilderx/
+
+# uni-app CLI 同步到原生壳的 www（CI 每次生成；勿提交）
+apk-project/android/simpleDemo/src/main/assets/apps/
+ios-project/native/**/apps/*/www/
+
+# HBuilderX 离线 SDK 原始下载目录（已从中复制工程，原始包勿提交）
+apk-project/Android-SDK*/
+ios-project/iOS-SDK*/
+
+# Android 构建产物和 CI keystore
+apk-project/android/simpleDemo/build/
+apk-project/android/.gradle/
+apk-project/android/simpleDemo/ci-release.keystore
+
+# iOS 构建产物
+ios-project/native/**/build/
+ios-project/native/**/*.xcarchive
+
+storage/screenshot/image/
+storage/screenshot-last/image/

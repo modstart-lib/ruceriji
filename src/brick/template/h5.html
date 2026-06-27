@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>
+        <%= htmlWebpackPlugin.options.title %>
+    </title>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.documentElement.style.fontSize = 20 + 'px'
+        })
+    </script>
+    <link rel="stylesheet" href="<%= BASE_URL %>static/index.<%= VUE_APP_INDEX_CSS_HASH %>.css" />
+    <style>
+        html, body, #app { height: 100%; margin: 0; padding: 0; }
+        .app-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background-color: #f8f8f8; }
+        .app-loading-spinner { width: 36px; height: 36px; border: 3px solid #e1e1e1; border-top-color: #007aff; border-radius: 50%; animation: app-loading-spin 0.8s linear infinite; }
+        .app-loading-text { margin-top: 16px; font-size: 14px; color: #999; letter-spacing: 1px; }
+        @keyframes app-loading-spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+<noscript>
+    <strong>Please enable JavaScript to continue.</strong>
+</noscript>
+<div id="app">
+    <div class="app-loading">
+        <div class="app-loading-spinner"></div>
+        <div class="app-loading-text">加载中...</div>
+    </div>
+</div>
+<!-- built files will be auto injected -->
+<script src="<%= BASE_URL %>static/js/image-resize.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+{
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^c-(.*)": "@/brick/components/c-$1.vue",
+      "^C([A-Z].*)": "@/brick/components/C$1.vue",
+      "^u-(.*)": "uview-plus/components/u-$1/u-$1.vue",
+      "^up-(.*)": "uview-plus/components/u-$1/u-$1.vue",
+      "^bui-(.*)": "@/brick/bui/bui-$1/bui-$1.vue",
+      "^uni-(.*)": "@/brick/uni/uni-$1/uni-$1.vue",
+      "^icon-lucide-(.*)": "@/icons/lucide/icon-lucide-$1.vue"
+    }
+  },
+  "pages": [
+    {
+      "path": "pages/wc",
+      "style": { "navigationBarTitleText": "开始", "navigationStyle": "custom", "backgroundColor": "#F7F8FA" }
+    },
+    {
+      "path": "pages/calendar",
+      "style": { "navigationBarTitleText": "记录", "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/edit",
+      "style": { "navigationBarTitleText": "便便记录", "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/detail",
+      "style": { "navigationBarTitleText": "便便分析", "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/detail_ai",
+      "style": { "navigationBarTitleText": "AI分析结果", "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/password",
+      "style": { "navigationBarTitleText": "锁屏密码", "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/password_verify",
+      "style": { "navigationBarTitleText": "解锁屏幕", "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/award/index",
+      "style": { "navigationBarTitleText": "我的成就", "navigationStyle": "custom" }
+    },
+    {
+      "path": "pages/member",
+      "style": { "navigationBarTitleText": "我的", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/member/login",
+      "style": { "navigationBarTitleText": "用户登录", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/member/login_phone",
+      "style": { "navigationBarTitleText": "手机登录", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/member/oauth_bind",
+      "style": { "navigationBarTitleText": "绑定账号", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/member/register",
+      "style": { "navigationBarTitleText": "注册账号", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/member/register_phone",
+      "style": { "navigationBarTitleText": "手机注册", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/member/retrieve",
+      "style": { "navigationBarTitleText": "找回密码", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/member/retrieve_phone",
+      "style": { "navigationBarTitleText": "手机找回密码", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/member/retrieve_email",
+      "style": { "navigationBarTitleText": "邮箱找回密码", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/member/retrieve_reset",
+      "style": { "navigationBarTitleText": "重置密码", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/member/profile",
+      "style": { "navigationBarTitleText": "个人资料", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/member/profile_password",
+      "style": { "navigationBarTitleText": "修改密码", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/member/profile_phone",
+      "style": { "navigationBarTitleText": "绑定手机", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/member/profile_email",
+      "style": { "navigationBarTitleText": "绑定邮箱", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/member/profile_avatar",
+      "style": { "navigationBarTitleText": "修改头像", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/member/profile_delete",
+      "style": { "navigationBarTitleText": "注销账号", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/member/money",
+      "style": { "navigationBarTitleText": "我的余额", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/member/money_log",
+      "style": { "navigationBarTitleText": "余额明细", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/member/money_cash",
+      "style": { "navigationBarTitleText": "余额提现", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/member/money_charge",
+      "style": { "navigationBarTitleText": "余额充值", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/member/money_cash_log",
+      "style": { "navigationBarTitleText": "提现记录", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/member/credit",
+      "style": { "navigationBarTitleText": "我的积分", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/member/credit_log",
+      "style": { "navigationBarTitleText": "积分明细", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/member/doc",
+      "style": { "navigationBarTitleText": "用户协议", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/member/vip",
+      "style": { "navigationBarTitleText": "会员", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/member/message",
+      "style": { "navigationBarTitleText": "消息通知", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/system/data_manage",
+      "style": { "navigationBarTitleText": "数据管理", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/system/page404",
+      "style": { "navigationBarTitleText": "页面不存在", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/system/frame",
+      "style": { "navigationBarTitleText": "", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/system/setting",
+      "style": { "navigationBarTitleText": "系统设置", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/system/feedback",
+      "style": { "navigationBarTitleText": "意见反馈", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/system/search",
+      "style": { "navigationBarTitleText": "搜索", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/system/qa",
+      "style": { "navigationBarTitleText": "帮助中心", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/system/contact",
+      "style": { "navigationBarTitleText": "联系我们", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/system/web",
+      "style": { "navigationBarTitleText": "", "navigationStyle": "custom" }
+    },
+    {
+      "path": "brick/module/tecmz/captcha",
+      "style": { "navigationBarTitleText": "验证", "navigationStyle": "custom" }
+    }
+  ],
+  "subPackages": [
+    {
+      "root": "pages_data",
+      "pages": [
+        {
+          "path": "data",
+          "style": { "navigationBarTitleText": "数据分析", "navigationStyle": "custom" }
+        }
+      ]
+    }
+  ],
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#111111",
+    "borderStyle": "white",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/wc",
+        "text": "开始",
+        "iconPath": "static/tabbar/wc.png",
+        "selectedIconPath": "static/tabbar/wc_active.png"
+      },
+      {
+        "pagePath": "pages/calendar",
+        "text": "记录",
+        "iconPath": "static/tabbar/calendar.png",
+        "selectedIconPath": "static/tabbar/calendar_active.png"
+      },
+      {
+        "pagePath": "pages/member",
+        "text": "我的",
+        "iconPath": "static/tabbar/member.png",
+        "selectedIconPath": "static/tabbar/member_active.png"
+      }
+    ]
+  },
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "如厕日记",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationStyle": "custom",
+    "backgroundColor": "#f5f5f5"
+  }
+}

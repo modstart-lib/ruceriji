@@ -1,0 +1,15 @@
+@import "./token.less";
+
+// 应用主题色变量（供 Less 中 lighten/darken；与 tokens.ts 主色 #111111 一致）
+@color-primary: #111111;
+@color-primary-light: lighten(@color-primary, 5%);
+@color-primary-dark: darken(@color-primary, 5%);
+@color-rc-primary: #FAE058;
+@color-rc-ai: #8f59cf;
+
+:root,
+page {
+  --color-rc-primary: @color-rc-primary;
+  --color-rc-primary-text: darken(@color-rc-primary, 50%);
+  --color-rc-ai: @color-rc-ai;
+}
