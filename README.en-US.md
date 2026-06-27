@@ -31,13 +31,17 @@
 
 ---
 
-## 📦 Download
+## 🖼️ Screenshots
 
-| Platform | Link |
-|----------|------|
-| **Android** | [Download from App Store](https://sj.qq.com/appdetail/com.ruceriji) |
-| **iOS** | Available on App Store |
-| **WeChat Mini Program** | <img src="demo/image/qr-miniapp.png" width="120" alt="WeChat Mini Program QR Code" /><br/>Scan to use instantly, no install needed |
+| WC Record | Calendar View |
+|:---------:|:-------------:|
+| <img src="demo/image/pages-wc.png" width="220" alt="WC Record" /> | <img src="demo/image/pages-calendar.png" width="220" alt="Calendar View" /> |
+| One-tap timer · Multi-dimension logging · Health tips | Monthly overview · Color indicators · Trend tracking |
+
+| User Profile | Achievements |
+|:------------:|:------------:|
+| <img src="demo/image/pages-member.png" width="220" alt="User Profile" /> | <img src="demo/image/pages-award-index.png" width="220" alt="Achievements" /> |
+| Data dashboard · Privacy settings · Theme toggle | Milestone badges · Fun titles · Health trophies |
 
 ---
 
@@ -46,8 +50,6 @@
 ### 💩 Smart Recording & Timing
 
 Start a timer with one tap when you visit the toilet, record the duration, and log detailed attributes. The app supports comprehensive data entry including time, duration, shape, color, consistency, and more.
-
-![Banner](demo/image/banner.png)
 
 ### 📋 Comprehensive Attribute Classification
 
@@ -125,8 +127,6 @@ Your data is yours. The app provides:
 
 Support for **Light**, **Dark**, and **Follow System** themes for a comfortable experience day or night.
 
-![Profile Page](demo/image/logo.png)
-
 ### 🌍 Internationalization
 
 Built-in support for multiple languages with easy switching:
@@ -136,17 +136,15 @@ Built-in support for multiple languages with easy switching:
 
 ---
 
-## 🖼️ Screenshots
+## 📦 Download
 
-| WC Record | Calendar View |
-|:---------:|:-------------:|
-| <img src="demo/image/pages-wc.png" width="220" alt="WC Record" /> | <img src="demo/image/pages-calendar.png" width="220" alt="Calendar View" /> |
-| One-tap timer · Multi-dimension logging · Health tips | Monthly overview · Color indicators · Trend tracking |
+| Platform | Link |
+|----------|------|
+| **Android** | [Download from App Store](https://sj.qq.com/appdetail/com.ruceriji) |
+| **iOS** | Available on App Store |
+| **WeChat Mini Program** | <img src="demo/image/qr-miniapp.png" width="120" alt="WeChat Mini Program QR Code" /><br/>Scan to use instantly, no install needed |
 
-| User Profile | Achievements |
-|:------------:|:------------:|
-| <img src="demo/image/pages-member.png" width="220" alt="User Profile" /> | <img src="demo/image/pages-award-index.png" width="220" alt="Achievements" /> |
-| Data dashboard · Privacy settings · Theme toggle | Milestone badges · Fun titles · Health trophies |
+---
 
 ## 🚀 Development
 
