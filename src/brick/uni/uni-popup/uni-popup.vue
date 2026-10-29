@@ -1,9 +1,11 @@
 <template>
 	<view v-if="showPopup" class="uni-popup" :class="[popupstyle, isDesktop ? 'fixforpc-z-index' : '']">
 		<view @touchstart="touchstart">
-			<uni-transition key="1" v-if="maskShow" name="mask" mode-class="fade" :styles="maskClass"
+			<uni-transition
+v-if="maskShow" key="1" name="mask" mode-class="fade" :styles="maskClass"
 				:duration="duration" :show="showTrans" @click="onTap" />
-			<uni-transition key="2" :mode-class="ani" name="content" :styles="transClass" :duration="duration"
+			<uni-transition
+key="2" :mode-class="ani" name="content" :styles="transClass" :duration="duration"
 				:show="showTrans" @click="onTap">
 				<view class="uni-popup__wrapper" :style="getStyles" :class="[popupstyle]" @click="clear">
 					<slot />
@@ -46,13 +48,12 @@
 	 */
 
 	export default {
-		name: 'uniPopup',
+		name: 'UniPopup',
 		components: {
 			// #ifdef H5
 			keypress
 			// #endif
 		},
-		emits: ['change', 'maskClick'],
 		props: {
 			// 开启动画
 			animation: {
@@ -91,49 +92,7 @@
 				type: String,
 			}
 		},
-
-		watch: {
-			/**
-			 * 监听type类型
-			 */
-			type: {
-				handler: function(type) {
-					if (!this.config[type]) return
-					this[this.config[type]](true)
-				},
-				immediate: true
-			},
-			isDesktop: {
-				handler: function(newVal) {
-					if (!this.config[newVal]) return
-					this[this.config[this.type]](true)
-				},
-				immediate: true
-			},
-			/**
-			 * 监听遮罩是否可点击
-			 * @param {Object} val
-			 */
-			maskClick: {
-				handler: function(val) {
-					this.mkclick = val
-				},
-				immediate: true
-			},
-			isMaskClick: {
-				handler: function(val) {
-					this.mkclick = val
-				},
-				immediate: true
-			},
-			// H5 下禁止底部滚动
-			showPopup(show) {
-				// #ifdef H5
-				// fix by mehaotian 处理 h5 滚动穿透的问题
-				document.getElementsByTagName('body')[0].style.overflow = show ? 'hidden' : 'visible'
-				// #endif
-			}
-		},
+		emits: ['change', 'maskClick'],
 		data() {
 			return {
 				duration: 300,
@@ -190,6 +149,49 @@
 				return this.backgroundColor
 			}
 		},
+
+		watch: {
+			/**
+			 * 监听type类型
+			 */
+			type: {
+				handler: function(type) {
+					if (!this.config[type]) return
+					this[this.config[type]](true)
+				},
+				immediate: true
+			},
+			isDesktop: {
+				handler: function(newVal) {
+					if (!this.config[newVal]) return
+					this[this.config[this.type]](true)
+				},
+				immediate: true
+			},
+			/**
+			 * 监听遮罩是否可点击
+			 * @param {Object} val
+			 */
+			maskClick: {
+				handler: function(val) {
+					this.mkclick = val
+				},
+				immediate: true
+			},
+			isMaskClick: {
+				handler: function(val) {
+					this.mkclick = val
+				},
+				immediate: true
+			},
+			// H5 下禁止底部滚动
+			showPopup(show) {
+				// #ifdef H5
+				// fix by mehaotian 处理 h5 滚动穿透的问题
+				document.getElementsByTagName('body')[0].style.overflow = show ? 'hidden' : 'visible'
+				// #endif
+			}
+		},
 		mounted() {
 			const fixSize = () => {
 				// #ifdef MP-WEIXIN
@@ -236,12 +238,6 @@
 		},
 		// #ifndef VUE3
 		// TODO vue2
-		destroyed() {
-			this.setH5Visible()
-		},
-		// #endif
-		// #ifdef VUE3
-		// TODO vue3
 		unmounted() {
 			this.setH5Visible()
 		},

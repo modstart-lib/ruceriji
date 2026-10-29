@@ -37,7 +37,13 @@
           </view>
         </view>
       </view>
-      <c-list-status ref="listStatus" :loading="listLoading" :records="list.records" />
+      <c-list-status
+        ref="listStatus"
+        :loading="listLoading"
+        :records="list.records"
+        empty-text="暂无可用优惠券"
+        empty-hint="领取的优惠券会显示在这里"
+      />
     </view>
   </view>
 </template>

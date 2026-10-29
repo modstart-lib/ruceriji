@@ -39,7 +39,13 @@
           <text v-else class="text-danger">{{ item.change }}</text>
         </view>
       </view>
-      <c-list-status ref="listStatus" :loading="listLoading" :records="list.records" />
+      <c-list-status
+        ref="listStatus"
+        :loading="listLoading"
+        :records="list.records"
+        empty-text="暂无积分明细"
+        empty-hint="签到、兑换产生的积分变动会显示在这里"
+      />
     </view>
   </view>
 </template>

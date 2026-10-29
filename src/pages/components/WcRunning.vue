@@ -192,9 +192,9 @@ onMounted(() => {
 .btn-main,
 .btn-main-same {
   width: 480rpx !important;
-  height: 104rpx !important;
-  min-height: 104rpx !important;
-  font-size: 32rpx !important;
+  height: 52px !important;
+  min-height: 52px !important;
+  font-size: 16px !important;
   margin: 0 auto;
 }
 

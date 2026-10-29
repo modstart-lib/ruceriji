@@ -1,87 +1,79 @@
 <template>
-  <view class="min-h-screen relative pb-6 bg-[#f7f8fa]">
+  <view class="min-h-screen relative pb-6 bg-[var(--token-body)]">
     <bui-member-center-top-b>
-      <c-page-header-holder title="我的" background-color="transparent" color="#111111" />
+      <c-page-header-trans title="我的" :has-back="false" :float="false" color="#111111" />
     </bui-member-center-top-b>
 
-    <!-- 用户数据统计卡片 -->
+    <!-- 用户数据统计卡片（未登录时数据无意义，不展示占位 "-"） -->
     <view
-      class="page-motion-t1 bg-white/80 backdrop-blur-xl rounded-3xl px-2 py-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] mx-3 flex text-center mb-4 relative z-20 border border-white/60 -mt-6 items-center justify-between"
+      v-if="user.id"
+      class="member-card page-motion-t1 bg-white/80 backdrop-blur-xl rounded-3xl px-2 py-4 shadow-float mx-3 flex text-center mb-4 relative z-20 border border-white/60 -mt-6 items-center justify-between"
       style="color: #111111"
     >
       <!-- 数据项 -->
       <view class="flex-grow flex justify-around items-center">
         <view class="py-1 flex flex-col justify-center min-w-[4rem]">
-          <view class="text-xs text-[#111111] opacity-60">使用天数</view>
-          <view class="text-xl font-bold pt-1.5 text-[#111111]">
-            {{ biz && biz.totalDay ? biz.totalDay : '-' }}
+          <view class="text-xs text-[#111111] opacity-70">使用天数</view>
+          <view class="text-xl font-bold pt-1.5 text-[#111111] flex items-baseline justify-center">
+            <text class="tabular-nums">{{ biz && biz.totalDay ? biz.totalDay : '-' }}</text>
             <text v-if="biz && biz.totalDay" class="text-[0.6rem] font-normal opacity-60 ml-0.5">天</text>
           </view>
         </view>
 
-        <view class="w-px h-8 bg-gray-200/60"></view>
+        <view class="w-px h-6 bg-gray-200/60"></view>
 
         <view class="py-1 flex flex-col justify-center min-w-[4rem]">
-          <view class="text-xs text-[#111111] opacity-60">累计次数</view>
-          <view class="text-xl font-bold pt-1.5 text-[#111111]">
-            {{ biz && biz.totalRecord ? biz.totalRecord : '-' }}
+          <view class="text-xs text-[#111111] opacity-70">累计次数</view>
+          <view class="text-xl font-bold pt-1.5 text-[#111111] flex items-baseline justify-center">
+            <text class="tabular-nums">{{ biz && biz.totalRecord ? biz.totalRecord : '-' }}</text>
             <text v-if="biz && biz.totalRecord" class="text-[0.6rem] font-normal opacity-60 ml-0.5">次</text>
           </view>
         </view>
 
-        <view class="w-px h-8 bg-gray-200/60"></view>
+        <view class="w-px h-6 bg-gray-200/60"></view>
 
         <view class="py-1 flex flex-col justify-center min-w-[4rem]">
-          <view class="text-xs text-[#111111] opacity-60">累计重量</view>
-          <view class="text-xl font-bold pt-1.5 text-[#111111]">
+          <view class="text-xs text-[#111111] opacity-70">累计重量</view>
+          <view class="text-xl font-bold pt-1.5 text-[#111111] flex items-baseline justify-center">
             <template v-if="biz && biz.totalWeight">
-              {{ biz.totalWeight > 1000 ? (biz.totalWeight / 1000).toFixed(1) : biz.totalWeight }}
+              <text class="tabular-nums">
+                {{ biz.totalWeight > 1000 ? (biz.totalWeight / 1000).toFixed(1) : biz.totalWeight }}
+              </text>
               <text class="text-[0.6rem] font-normal opacity-60 ml-0.5">{{ biz.totalWeight > 1000 ? 'kg' : 'g' }}</text>
             </template>
             <template v-else>-</template>
           </view>
         </view>
       </view>
-
-      <!-- 卡通人物侧边 -->
-      <view class="w-16 flex-shrink-0 flex items-center justify-center relative ml-1 mr-1">
-        <view class="absolute inset-0 bg-yellow-100/50 rounded-full blur-md opacity-60"></view>
-        <image
-          :src="defaultAvatarImage"
-          class="w-12 h-12 block relative z-10 drop-shadow-sm"
-          mode="aspectFill"
-          style="width: 3rem; height: 3rem"
-        />
-      </view>
     </view>
 
     <!-- 快捷功能网格 -->
     <view
-      class="page-motion-t2 bg-white/80 backdrop-blur-xl border border-white/60 rounded-3xl p-2 shadow-[0_4px_20px_rgb(0,0,0,0.02)] mx-3 mb-4 relative z-20"
+      class="member-card page-motion-t2 bg-white/80 backdrop-blur-xl border border-white/60 rounded-3xl p-2 shadow-card mx-3 mb-4 relative z-20"
     >
       <view class="flex">
         <view
           class="flex-1 text-center py-3 rounded-2xl active:bg-gray-50/50 transition-colors"
           @click="doOpenMemberSetting"
         >
-          <view class="flex justify-center items-center h-10 text-[#111111]"><icon-lucide-dumbbell :size="26" /></view>
+          <view class="flex justify-center items-center h-10 text-[#111111]"><icon-lucide-dumbbell :size="24" /></view>
           <view class="text-xs text-[#111111] opacity-70 mt-1.5">身高体重</view>
         </view>
         <view
           class="flex-1 text-center py-3 rounded-2xl active:bg-gray-50/50 transition-colors"
-          @click="requireUserLoginRouteTo('/pages/calendar', {}, true)"
+          @click="requireUserLoginRouteTo('/pages_data/data', {}, true)"
         >
           <view class="flex justify-center items-center h-10 text-[#111111]"
-            ><icon-lucide-bar-chart-big :size="26"
+            ><icon-lucide-bar-chart-big :size="24"
           /></view>
-          <view class="text-xs text-[#111111] opacity-70 mt-1.5">统计分析</view>
+          <view class="text-xs text-[#111111] opacity-70 mt-1.5">数据分析</view>
         </view>
         <view
           class="flex-1 text-center py-3 rounded-2xl active:bg-gray-50/50 transition-colors"
           @click="requireUserLoginRouteTo('/brick/module/member/message', {}, true)"
         >
           <view class="flex justify-center items-center h-10 text-[#111111]"
-            ><icon-lucide-message-circle :size="26"
+            ><icon-lucide-message-circle :size="24"
           /></view>
           <view class="text-xs text-[#111111] opacity-70 mt-1.5">消息通知</view>
         </view>
@@ -89,10 +81,8 @@
     </view>
 
     <!-- 功能列表 -->
-    <view class="page-motion-t3 px-3 relative z-20 pb-8">
-      <view
-        class="rounded-3xl bg-white/80 backdrop-blur-xl border border-white/60 shadow-[0_4px_20px_rgb(0,0,0,0.02)] mb-4 overflow-hidden"
-      >
+    <view class="member-list page-motion-t3 px-3 relative z-20 member-list-bottom">
+      <view class="rounded-3xl bg-white/80 backdrop-blur-xl border border-white/60 shadow-card mb-4 overflow-hidden">
         <view
           class="px-4 py-3.5 flex items-center border-b border-gray-100/30 active:bg-gray-50/50 transition-colors"
           @click="requireUserLoginRouteTo('/pages/award/index', {}, true)"
@@ -157,7 +147,6 @@
     </view>
 
     <bui-member-login-dialog ref="memberLoginDialog" />
-    <c-no-more />
     <MemberInfoSettingDialog ref="memberInfoSettingDialog" />
   </view>
 </template>
@@ -179,7 +168,7 @@ const { user, userInit, requireUserLogin, requireUserLoginRouteTo } = useUser()
 const { config, SystemConfig } = useConfig()
 const { ui, getPageDefaultTitle, autoSetNavigationBarColor } = useUi()
 const { shareConfig, setShareConfig, getShareAppMessage, getShareTimeline } = useShare()
-const { biz, defaultWcImage, defaultAvatarImage } = useWcAsset()
+const { biz } = useWcAsset()
 
 const memberInfoSettingDialog = ref<any>(null)
 
@@ -207,3 +196,25 @@ onReady(() => {
   Starter.boot()
 })
 </script>
+
+<style lang="scss" scoped>
+.member-card {
+  box-sizing: border-box;
+  width: calc(100% - 24px);
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.member-list {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 664px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.member-list-bottom {
+  padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px) + 16px);
+}
+</style>

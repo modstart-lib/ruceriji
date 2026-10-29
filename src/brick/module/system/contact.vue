@@ -7,9 +7,9 @@
         <text class="pb-system-contact__intro-text">如需帮助或商务合作，可通过以下方式与我们取得联系</text>
       </view>
 
-      <view class="pb-system-contact__hero mb-4">
+      <view v-if="config.siteLogo || config.siteSlogan" class="pb-system-contact__hero mb-4">
         <view class="pb-system-contact__hero-inner">
-          <view class="pb-system-contact__logo-wrap">
+          <view v-if="config.siteLogo" class="pb-system-contact__logo-wrap">
             <image class="pb-system-contact__logo" mode="widthFix" :src="config.siteLogo" />
           </view>
           <text v-if="config.siteSlogan" class="pb-system-contact__slogan">{{ config.siteSlogan }}</text>
@@ -158,13 +158,25 @@ function makePhoneCall() {
   })
 }
 
+/** 后台未配置联系方式时会返回 [Email] 这类占位符，统一按空值处理 */
+function normalizeContact(value?: string) {
+  const text = (value ?? '').trim()
+  if (!text || text === '-' || /^\[[^\]]+\]$/.test(text)) return ''
+  return text
+}
+
 async function init() {
   state.loading = true
   dialog.loadingOn()
   const res = await api.post('site/contact', {})
   state.loading = false
   dialog.loadingOff()
-  state.data = res.data
+  state.data = {
+    ...res.data,
+    email: normalizeContact(res.data.email),
+    phone: normalizeContact(res.data.phone),
+    address: normalizeContact(res.data.address),
+  }
 }
 
 onReady(() => {

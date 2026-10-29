@@ -1,10 +1,14 @@
 {
   "name": "ruceriji",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "scripts": {
     "lint": "eslint src --fix",
     "format": "prettier --write \"src/**/*.{ts,vue,js,json}\" --log-level warn",
     "check": "npm run format && npm run lint",
+    "seed": "node scripts/seed.mjs",
+    "test:ui": "node test/run.mjs ui",
+    "test:biz": "node test/run.mjs biz",
+    "screenshot": "node test/screenshot/index.mjs",
     "dev:custom": "uni -p",
     "dev:h5": "uni",
     "dev:h5:ssr": "uni --ssr",
@@ -33,6 +37,7 @@
     "build:mp-toutiao": "uni build -p mp-toutiao",
     "build:mp-harmony": "uni build -p mp-harmony",
     "build:mp-weixin": "uni build -p mp-weixin",
+    "build:mp-weixin:test": "uni build -p mp-weixin -m test",
     "build:mp-xhs": "uni build -p mp-xhs",
     "build:quickapp-webview": "uni build -p quickapp-webview",
     "build:quickapp-webview-huawei": "uni build -p quickapp-webview-huawei",

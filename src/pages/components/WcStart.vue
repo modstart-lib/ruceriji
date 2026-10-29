@@ -29,13 +29,18 @@
             <view class="wc-top-card-wrap flex-col">
               <view
                 v-if="timeSinceLastString"
-                class="wc-motion-banner inline-block max-w-[92%] rounded-full px-6 py-2.5 text-center text-sm font-medium shadow-[0_8rpx_24rpx_rgba(0,0,0,0.08)]"
+                class="wc-motion-banner inline-flex max-w-[92%] items-center rounded-full px-5 py-2 text-center text-sm font-medium shadow-[0_4px_16px_rgba(0,0,0,0.06)]"
                 style="
                   color: var(--color-rc-primary-text);
                   background: linear-gradient(120deg, var(--color-rc-primary) 0%, #f5d84a 100%);
                 "
               >
-                距离上次便便已经 {{ timeSinceLastString }}
+                <text class="tabular-nums">距离上次便便已经 {{ timeSinceLastString }}</text>
+              </view>
+              <view v-if="biz && biz.totalRecord" class="wc-top-meta">
+                <text class="tabular-nums">累计 {{ biz.totalRecord }} 次</text>
+                <text class="wc-top-meta__dot">·</text>
+                <text class="tabular-nums">使用 {{ biz.totalDay }} 天</text>
               </view>
             </view>
           </view>
@@ -73,7 +78,6 @@
 
 <script setup lang="ts">
 import { useAppUser } from '@/brick/composables/useAppStore'
-import { DateUtil } from '@/brick/lib/date-util'
 import { useWcAsset } from '@/composables/useRuceriji'
 import { onMounted, reactive, toRefs, watch } from 'vue'
 
@@ -113,15 +117,17 @@ watch(
   { immediate: true }
 )
 
+/**
+ * 倒计时按人读的粒度显示：48 秒 / 12 分 30 秒 / 2 小时 24 分
+ * 不用 02时24分33秒 这类机器格式，秒级数字用 tabular-nums 防抖
+ */
 function getTimeSinceLast() {
   if (!user.value || !user.value.id) return null
-  if (state.timeSinceLast > 0) {
-    let format = 'ss秒'
-    if (state.timeSinceLast > 60) format = 'mm分' + format
-    if (state.timeSinceLast > 3600) format = 'HH时' + format
-    return DateUtil.formatDuration(state.timeSinceLast, { isMs: false, format })
-  }
-  return null
+  const total = state.timeSinceLast
+  if (total <= 0) return null
+  if (total < 60) return `${total} 秒`
+  if (total < 3600) return `${Math.floor(total / 60)} 分 ${total % 60} 秒`
+  return `${Math.floor(total / 3600)} 小时 ${Math.floor((total % 3600) / 60)} 分`
 }
 
 onMounted(() => {
@@ -136,6 +142,21 @@ onMounted(() => {
 .wc-stage {
   position: relative;
   overflow: hidden;
+}
+
+/* 间隔胶囊下的一行累计信息，让首屏除了「距离上次」还有整体进度 */
+.wc-top-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--token-text-tertiary);
+
+  &__dot {
+    opacity: 0.5;
+  }
 }
 
 .wc-scroll {
@@ -156,9 +177,9 @@ onMounted(() => {
 .btn-main,
 .btn-main-same {
   width: 480rpx !important;
-  height: 104rpx !important;
-  min-height: 104rpx !important;
-  font-size: 32rpx !important;
+  height: 52px !important;
+  min-height: 52px !important;
+  font-size: 16px !important;
   margin: 0 auto;
 }
 

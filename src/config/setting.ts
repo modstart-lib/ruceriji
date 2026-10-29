@@ -12,18 +12,19 @@ const Configs: Record<string, ConfigItem> = {
     version: '1.0.0',
     apiDebug: false,
     // #ifdef H5
+    // H5 一律使用相对路径，域名由 dev 时的 vite proxy / 生产时的 nginx 决定
     apiBase: '/api/',
     // #endif
   },
   development: {
     apiDebug: false,
     // #ifndef H5
-    apiBase: 'https://ruceriji.com/api/',
+    apiBase: import.meta.env.VITE_API_BASE || 'https://ruceriji.com/api/',
     // #endif
   },
   production: {
     // #ifndef H5
-    apiBase: 'https://ruceriji.com/api/',
+    apiBase: import.meta.env.VITE_API_BASE || 'https://ruceriji.com/api/',
     // #endif
   },
 }

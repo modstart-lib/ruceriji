@@ -81,11 +81,22 @@ onMounted(() => {
       line-height: 1.4;
       margin: 1em 0 0.5em;
     }
-    :deep(h1) { font-size: 1.8em; }
-    :deep(h2) { font-size: 1.5em; }
-    :deep(h3) { font-size: 1.25em; }
-    :deep(h4) { font-size: 1.1em; }
-    :deep(h5), :deep(h6) { font-size: 1em; }
+    :deep(h1) {
+      font-size: 1.8em;
+    }
+    :deep(h2) {
+      font-size: 1.5em;
+    }
+    :deep(h3) {
+      font-size: 1.25em;
+    }
+    :deep(h4) {
+      font-size: 1.1em;
+    }
+    :deep(h5),
+    :deep(h6) {
+      font-size: 1em;
+    }
 
     :deep(p) {
       margin: 0.75em 0;
@@ -102,7 +113,9 @@ onMounted(() => {
     :deep(a) {
       color: #007aff;
       text-decoration: none;
-      &:hover { text-decoration: underline; }
+      &:hover {
+        text-decoration: underline;
+      }
     }
 
     :deep(ul) {
@@ -187,10 +200,24 @@ onMounted(() => {
       margin: 1.5em 0;
     }
 
-    :deep(strong), :deep(b) { font-weight: bold; }
-    :deep(em), :deep(i) { font-style: italic; }
-    :deep(del), :deep(s) { text-decoration: line-through; color: #999; }
-    :deep(mark) { background: #fff3cd; padding: 0.1em 0.2em; border-radius: 2px; }
+    :deep(strong),
+    :deep(b) {
+      font-weight: bold;
+    }
+    :deep(em),
+    :deep(i) {
+      font-style: italic;
+    }
+    :deep(del),
+    :deep(s) {
+      text-decoration: line-through;
+      color: #999;
+    }
+    :deep(mark) {
+      background: #fff3cd;
+      padding: 0.1em 0.2em;
+      border-radius: 2px;
+    }
   }
   /* #endif */
 
@@ -200,17 +227,30 @@ onMounted(() => {
     line-height: 1.8;
     color: #333;
 
-    h1, h2, h3, h4, h5, h6 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
       font-weight: bold;
       color: #1a1a1a;
       line-height: 1.4;
       margin: 1em 0 0.5em;
     }
-    h1 { font-size: 1.8em; }
-    h2 { font-size: 1.5em; }
-    h3 { font-size: 1.25em; }
+    h1 {
+      font-size: 1.8em;
+    }
+    h2 {
+      font-size: 1.5em;
+    }
+    h3 {
+      font-size: 1.25em;
+    }
 
-    p { margin: 0.75em 0; }
+    p {
+      margin: 0.75em 0;
+    }
 
     img {
       max-width: 100%;
@@ -218,7 +258,9 @@ onMounted(() => {
       border-radius: 6px;
     }
 
-    a { color: #007aff; }
+    a {
+      color: #007aff;
+    }
 
     blockquote {
       border-left: 4px solid #ddd;

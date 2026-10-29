@@ -135,9 +135,12 @@ watch(isLogin, (loggedIn) => {
 
   /* 让子页面 wc-stage / wc-scroll 获得确定高度，内部滚动，避免底部被裁切 */
   :deep(.wc-stage) {
+    /* 装饰光斑是 absolute + 负偏移，stage 必须是定位祖先并裁剪，否则光斑撑出页面宽度，
+       Android WebView 滚动时会画出横向滚动条（iOS/H5 不明显） */
+    position: relative;
     flex: 1 1 0%;
     min-height: 0;
-    overflow-x: hidden;
+    overflow: hidden;
   }
 
   /* 可滚动外层：不要用 relative+z，部分端上会和 overflow 组合导致内容不绘制 */
@@ -289,19 +292,72 @@ watch(isLogin, (loggedIn) => {
     overflow: visible;
   }
 
+  /* 折叠屏展开 / Duo 宽屏：收紧纵向占位，保证主按钮留在首屏 */
+  @media (min-width: 600px) {
+    :deep(.wc-inner) {
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+
+    :deep(.wc-top-block) {
+      min-height: 0;
+    }
+
+    :deep(.wc-top-status) {
+      margin-bottom: 8px;
+    }
+
+    :deep(.wc-top-headline) {
+      min-height: 0;
+    }
+
+    :deep(.wc-top-card-wrap) {
+      min-height: 80px;
+    }
+
+    :deep(.image-main) {
+      width: 220px;
+      height: 220px;
+      padding: 12px;
+      margin-top: 8px;
+    }
+
+    :deep(.wc-actions) {
+      margin-top: 16px;
+      min-height: 120px;
+    }
+
+    :deep(.wc-actions-second-placeholder) {
+      min-height: 60px;
+      margin-top: 16px;
+    }
+
+    :deep(.btn-main),
+    :deep(.btn-main-same) {
+      width: 320px !important;
+      height: 52px !important;
+      min-height: 52px !important;
+      font-size: 16px !important;
+    }
+  }
+
   /* 三种状态共用的状态胶囊 */
   :deep(.wc-status-pill) {
     display: inline-flex;
     align-items: center;
-    gap: 12rpx;
+    gap: 6px;
     border-radius: 9999px;
-    border: 1rpx solid rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.06);
     background: rgba(255, 255, 255, 0.85);
-    padding: 12rpx 28rpx;
-    font-size: 24rpx;
+    padding: 5px 12px;
+    /* 12px 保底：320px 下 rpx 会把它压到 10px，低于可读下限 */
+    font-size: 12px;
     font-weight: 500;
     line-height: 1.25;
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
     backdrop-filter: blur(8px);
   }
 

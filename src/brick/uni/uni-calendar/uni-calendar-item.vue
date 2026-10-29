@@ -1,6 +1,7 @@
 <template>
 	<view class="uni-calendar-item__weeks-box" :class="{
 		'uni-calendar-item--disable':weeks.disable,
+		'uni-calendar-item--today':weeks.isDay,
 		'uni-calendar-item--isDay':calendar.fullDate === weeks.fullDate && weeks.isDay,
 		'uni-calendar-item--checked':(calendar.fullDate === weeks.fullDate && !weeks.isDay) ,
 		'uni-calendar-item--before-checked':weeks.beforeMultiple,
@@ -36,7 +37,8 @@
 				'uni-calendar-item--after-checked':weeks.afterMultiple,
 				'uni-calendar-item--disable':weeks.disable,
 				}">{{weeks.isDay ? todayText : (weeks.lunar.IDayCn === '初一'?weeks.lunar.IMonthCn:weeks.lunar.IDayCn)}}</text>
-			<text v-if="weeks.extraInfo&&weeks.extraInfo.info" class="uni-calendar-item__weeks-lunar-text" :class="{
+			<view v-if="dotCount" class="uni-calendar-item__count">{{ dotCount }}</view>
+			<text v-else-if="weeks.extraInfo&&weeks.extraInfo.info" class="uni-calendar-item__weeks-lunar-text" :class="{
 				'uni-calendar-item--extra':weeks.extraInfo.info,
 				'uni-calendar-item--isDay-text':weeks.isDay,
 				'uni-calendar-item--isDay':calendar.fullDate === weeks.fullDate && weeks.isDay,
@@ -84,6 +86,11 @@ import i18nMessages from './i18n/index.js';
 		computed: {
 			todayText() {
 				return t("uni-calender.today")
+			},
+			// 用数字角标代替点阵：点阵读不出次数，2 个点看起来像省略号
+			dotCount() {
+				const count = Number(this.weeks.extraInfo && this.weeks.extraInfo.count) || 0
+				return count
 			},
 		},
 		methods: {
@@ -143,6 +150,27 @@ import i18nMessages from './i18n/index.js';
 		border-radius: 8px;
 		background-color: $uni-color-error;
 
+	}
+
+	/* 记录次数角标：直接写次数，替代读不出含义的点阵 */
+	.uni-calendar-item__count {
+		min-width: 14px;
+		height: 14px;
+		margin-top: 2px;
+		padding: 0 3px;
+		box-sizing: border-box;
+		border-radius: 999px;
+		font-size: 9px;
+		line-height: 14px;
+		text-align: center;
+		color: #ffffff;
+		background-color: rgba(17, 17, 17, 0.5);
+	}
+
+	.uni-calendar-item--checked .uni-calendar-item__count,
+	.uni-calendar-item--isDay .uni-calendar-item__count {
+		color: #111111;
+		background-color: rgba(255, 255, 255, 0.9);
 	}
 
 	.uni-calendar-item--disable {

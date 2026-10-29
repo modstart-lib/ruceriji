@@ -1,6 +1,6 @@
 <template>
-  <view v-if="config.retrievePhoneEnable || config.retrieveEmailEnable">
-    <view v-if="!config.retrieveDisable" class="retrieve">
+  <view v-if="!config.retrieveDisable">
+    <view class="retrieve">
       <text class="mr-2">忘记密码?</text>
       <c-smart-link to="/brick/module/member/retrieve" type="link">找回密码</c-smart-link>
     </view>

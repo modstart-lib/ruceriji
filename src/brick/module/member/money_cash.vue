@@ -9,10 +9,10 @@
           提现记录
         </view>
       </view>
-      <view>
-        <view v-if="!info.canCash" class="text-muted">
-          钱包余额 {{ info.total }} 元，最少 {{ info.min }} 元可提现
-        </view>
+      <view v-if="!info.canCash" class="cash-empty">
+        <view class="cash-empty__label">可提现余额</view>
+        <view class="cash-empty__amount">￥{{ info.total }}</view>
+        <view class="cash-empty__hint">满 {{ info.min }} 元可提现，继续积累后再来吧</view>
       </view>
       <view v-if="info.canCash" class="text-sm"> 提现金额 </view>
       <view v-if="info.canCash" class="flex py-2">
@@ -155,4 +155,34 @@ onReady(() => {
 })
 </script>
 
-<style></style>
+<style lang="less" scoped>
+.cash-empty {
+  margin-top: 2.5rem;
+  padding: 1.5rem 1.25rem;
+  border-radius: 1rem;
+  background: var(--token-surface);
+  border: 1px solid var(--token-border);
+  text-align: center;
+
+  &__label {
+    font-size: 0.8125rem;
+    color: var(--token-text-secondary);
+  }
+
+  &__amount {
+    margin-top: 0.5rem;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--token-text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__hint {
+    margin-top: 0.75rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--token-text-tertiary);
+  }
+}
+</style>

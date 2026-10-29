@@ -45,7 +45,7 @@ import { api } from '@/brick/lib/api'
 import { dialog } from '@/brick/lib/dialog'
 import { EntryProcessorUtil } from '@/brick/lib/entry-processor'
 import { router } from '@/brick/lib/router'
-import { useOauthLogin } from './OauthScript'
+import { useOauthLogin } from '@/brick/composables/useOauthLogin'
 import { computed } from 'vue'
 
 defineOptions({ name: 'Oauth' })

@@ -102,7 +102,7 @@ const effectiveBackgroundColor = computed(() => {
       .back {
         flex-shrink: 0;
         width: 50px;
-        padding-left: 4px;
+        padding-left: calc(4px + env(safe-area-inset-left, 0px));
         display: flex;
         align-items: center;
       }
@@ -118,6 +118,7 @@ const effectiveBackgroundColor = computed(() => {
         flex-shrink: 0;
         display: flex;
         align-items: center;
+        padding-right: env(safe-area-inset-right, 0px);
       }
     }
   }

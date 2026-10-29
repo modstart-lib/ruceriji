@@ -23,22 +23,12 @@ dist
 _temp/
 .hbuilderx/
 
-# uni-app CLI 同步到原生壳的 www（CI 每次生成；勿提交）
-apk-project/android/simpleDemo/src/main/assets/apps/
-ios-project/native/**/apps/*/www/
-
-# HBuilderX 离线 SDK 原始下载目录（已从中复制工程，原始包勿提交）
-apk-project/Android-SDK*/
-ios-project/iOS-SDK*/
-
-# Android 构建产物和 CI keystore
-apk-project/android/simpleDemo/build/
-apk-project/android/.gradle/
-apk-project/android/simpleDemo/ci-release.keystore
-
-# iOS 构建产物
-ios-project/native/**/build/
-ios-project/native/**/*.xcarchive
-
 storage/screenshot/image/
 storage/screenshot-last/image/
+/.agents
+
+# 本地打包输出（uniapp-build-*）
+.env
+output/apk-project/
+output/ios-project/
+output/h5-project/

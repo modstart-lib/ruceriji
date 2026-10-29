@@ -1,20 +1,20 @@
 <template>
-  <view class="min-h-screen relative pb-6 bg-[#f7f8fa]">
+  <view class="edit-root min-h-screen relative bg-[var(--token-body)]">
     <c-page-header title="便便记录" background-color="transparent" color="#111111" />
-    <view class="p-3">
+    <view class="edit-body p-3">
       <!-- 时间和时长 -->
-      <view class="bg-white border border-gray-100/50 rounded-2xl p-3 shadow-[0_4px_20px_rgb(0,0,0,0.02)] mb-5">
+      <view class="bg-white border border-[var(--token-border)] rounded-2xl p-3 shadow-card mb-5">
         <view class="flex items-center">
           <view class="flex-grow flex items-center" @click="openCalendar">
-            <icon-lucide-clock :size="18" class="mr-2 text-gray-500" />
-            <view style="color: #111111; font-weight: 500">{{ startTimeShow }}</view>
-            <icon-lucide-chevron-down :size="14" class="ml-1 text-gray-400" />
+            <icon-lucide-clock :size="18" class="mr-2 text-text-secondary" />
+            <view class="text-[#111111] font-medium">{{ startTimeShow }}</view>
+            <icon-lucide-chevron-down :size="14" class="ml-1 text-text-tertiary" />
           </view>
           <view class="ml-4">
             <c-time-duration v-model="duration">
-              <view class="flex items-center" style="color: #111111; font-weight: 500">
+              <view class="flex items-center text-[#111111] font-medium">
                 耗时 {{ durationShow }}
-                <icon-lucide-chevron-down :size="14" class="ml-1 text-gray-400" />
+                <icon-lucide-chevron-down :size="14" class="ml-1 text-text-tertiary" />
               </view>
             </c-time-duration>
           </view>
@@ -22,25 +22,23 @@
       </view>
       <!-- 便便属性选择 -->
       <template v-if="lazyStyleInited">
-        <view v-for="d in lazyStyleData" :key="d.name" class="mb-4">
+        <view v-for="d in lazyStyleData" :key="d.name" class="mb-5">
           <WcValueSelector v-model="d.value" :title="d.title" :options="d.options" />
         </view>
       </template>
       <c-loading v-else />
 
       <!-- 备注 -->
-      <view class="mb-4 bg-white border border-gray-100/50 rounded-xl p-2 shadow-[0_4px_20px_rgb(0,0,0,0.02)]">
+      <view class="mb-4 bg-white border border-[var(--token-border)] rounded-xl p-2 shadow-card">
         <u-textarea
           v-model="remark"
           placeholder="备注，随便写什么都可以"
-          placeholder-style="color:rgba(17,17,17,0.3)"
+          placeholder-style="color: rgba(17,17,17,0.4)"
           border="none"
           count
           :custom-style="{ color: '#111111' }"
         />
       </view>
-
-      <view class="h-20"></view>
     </view>
 
     <!-- 日期+时间选择弹窗 -->
@@ -64,9 +62,7 @@
     </uni-popup>
 
     <!-- 底部保存按钮 -->
-    <view
-      class="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-xl border-t border-gray-100 z-50 rounded-t-[2rem] shadow-[0_-4px_20px_rgb(0,0,0,0.03)] pb-safe"
-    >
+    <view class="bottom-bar fixed bottom-0 left-0 right-0 z-50">
       <u-button
         type="primary"
         shape="circle"
@@ -120,10 +116,7 @@ const startTimeShow = computed(() => {
 })
 
 const durationShow = computed(() => {
-  return DateUtil.formatDuration(state.duration, {
-    isMs: false,
-    format: state.duration >= 3600 ? 'HH时mm分ss秒' : 'mm分ss秒',
-  })
+  return DateUtil.formatDurationHuman(state.duration, { isMs: false })
 })
 
 const calendarDate = computed(() => {
@@ -229,3 +222,20 @@ onReady(() => {
   initData()
 })
 </script>
+
+<style lang="scss" scoped>
+.edit-body {
+  /* 固定底栏高度由 --bottom-bar-h 统一给出，禁止再用 h-20 之类的魔法数 */
+  padding-bottom: calc(var(--bottom-bar-h) + 20px);
+  /* 宽屏限宽居中，避免选项被均分拉成超宽行 */
+  box-sizing: border-box;
+  width: 100%;
+  /* DESIGN §4.2：表单类窄控件 420px，宽屏不再把选项拉成超宽行 */
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.edit-root {
+  --bottom-bar-max: 420px;
+}
+</style>

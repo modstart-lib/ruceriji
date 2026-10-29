@@ -3,6 +3,15 @@
     <c-page-header title="我的资料" />
 
     <view class="p-2">
+      <view class="profile-head" @tap="router.to('/brick/module/member/profile_avatar')">
+        <image class="profile-head__avatar" mode="aspectFill" :src="user.avatar || '/static/image/male_avatar.png'" />
+        <view class="profile-head__main">
+          <text class="profile-head__name">{{ user.nickname || user.username || '未设置昵称' }}</text>
+          <text class="profile-head__hint">点击更换头像</text>
+        </view>
+        <icon-lucide-chevron-right :size="16" class="profile-head__arrow" />
+      </view>
+
       <view class="rounded-xl overflow-hidden mb-2 bg-white">
         <view
           class="px-4 py-3.5 flex items-center border-b border-gray-50 border-0 border-solid active:bg-gray-50 transition-colors"
@@ -87,12 +96,7 @@
     </view>
 
     <view v-if="user.id > 0" class="px-2 pb-6 mt-4">
-      <view
-        class="rounded-full bg-red-500 text-white text-center py-3 active:bg-red-600 transition-colors"
-        @tap="doLogout"
-      >
-        退出登录
-      </view>
+      <view class="logout-btn" @tap="doLogout"> 退出登录 </view>
     </view>
 
     <NicknameEditDialog ref="nicknameEditRef"></NicknameEditDialog>
@@ -154,4 +158,63 @@ onShow(() => {
 
 <style lang="less" scoped>
 @import './style/style';
+
+.profile-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: var(--token-surface);
+
+  &__avatar {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--token-panel);
+  }
+
+  &__main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  &__name {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: var(--token-text);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &__hint {
+    font-size: 0.75rem;
+    color: var(--token-text-tertiary);
+  }
+
+  &__arrow {
+    flex-shrink: 0;
+    color: var(--token-text-tertiary);
+  }
+}
+
+/* 危险操作改成描边文字按钮，避免红色大块压过页面里的主按钮 */
+.logout-btn {
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--token-error);
+  background: var(--token-surface);
+  border: 1px solid var(--token-border);
+}
 </style>

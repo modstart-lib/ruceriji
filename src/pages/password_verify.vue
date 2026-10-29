@@ -1,80 +1,144 @@
 <template>
-  <view class="min-h-screen relative pb-6 bg-[#f7f8fa]">
+  <view class="lock-page">
     <c-page-header title="解锁屏幕" background-color="transparent" color="#111111" />
-    <view class="p-3">
-      <view class="text-center mb-6 text-xl font-bold" style="color: #111111">输入密码解锁屏幕</view>
-      <view class="password-display flex justify-center mb-10 mt-4">
-        <view
-          v-for="(_, i) in 6"
-          :key="i"
-          class="w-8 h-8 rounded-full border border-gray-200 mx-2 flex items-center justify-center bg-white shadow-sm"
-        >
-          <view
-            v-if="i < password.length"
-            class="w-3.5 h-3.5 rounded-full"
-            style="background-color: var(--color-rc-primary); box-shadow: 0 2px 8px rgba(250, 224, 88, 0.5)"
-          />
+
+    <view class="lock-body">
+      <view class="lock-intro">
+        <view class="lock-icon">
+          <icon-lucide-lock-open :size="26" color="#111111" />
         </view>
+        <view class="lock-title">{{ hasPin ? '输入密码解锁' : '锁屏保护未开启' }}</view>
+        <view class="lock-subtitle">{{
+          hasPin ? '输入 6 位数字密码继续使用' : '设置一个 6 位数字密码，防止他人查看你的记录'
+        }}</view>
       </view>
-      <!-- 数字键盘 -->
-      <view class="grid grid-cols-3 gap-4 px-4">
-        <view
-          v-for="n in [1, 2, 3, 4, 5, 6, 7, 8, 9, '', 0, 'del']"
-          :key="n"
-          class="text-center py-5 text-2xl font-bold rounded-3xl transition-transform active:scale-95"
-          :class="
-            n !== ''
-              ? 'bg-white text-[#111111] border border-gray-100/50 shadow-[0_8px_30px_rgb(0,0,0,0.03)] cursor-pointer'
-              : ''
-          "
-          @click="onKeyPress(n)"
-        >
-          <template v-if="n === 'del'">
-            <view class="flex items-center justify-center h-full"
-              ><icon-lucide-delete :size="28" color="#111111"
-            /></view>
-          </template>
-          <template v-else>{{ n }}</template>
-        </view>
-      </view>
-      <view class="pt-10 text-center">
-        <view class="flex justify-center items-center font-medium" style="color: #111111; opacity: 0.6">
-          <icon-lucide-circle-question-mark :size="16" class="mr-1.5" />
-          忘记锁屏密码？
-        </view>
-      </view>
+
+      <template v-if="hasPin">
+        <PinPad ref="padRef" :error="errorText" @complete="onComplete" @forgot="onForgot" />
+      </template>
+      <view v-else class="setup-btn" @click="router.to('/pages/password')">去设置</view>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
+import { Storage } from '@/brick/lib/storage'
+import { router } from '@/brick/lib/router'
 import { dialog } from '@/brick/lib/dialog'
-import { reactive, toRefs } from 'vue'
+import { onReady } from '@dcloudio/uni-app'
+import { reactive, ref, toRefs } from 'vue'
+import PinPad from './components/PinPad.vue'
 
 defineOptions({ name: 'PasswordVerifyPage' })
 
-const state = reactive({
-  password: '',
-})
-const { password } = toRefs(state)
+const PIN_KEY = 'rucerijiLockPin'
 
-function onKeyPress(key) {
-  if (key === '') return
-  if (key === 'del') {
-    state.password = state.password.slice(0, -1)
+const state = reactive({
+  hasPin: false,
+  errorText: '',
+  savedPin: '',
+})
+const { hasPin, errorText } = toRefs(state)
+
+const padRef = ref<InstanceType<typeof PinPad> | null>(null)
+
+function onComplete(pin: string) {
+  if (pin !== state.savedPin) {
+    state.errorText = '密码错误，请重试'
+    padRef.value?.reset()
     return
   }
-  if (state.password.length >= 6) return
-  state.password += key.toString()
-  if (state.password.length === 6) {
-    onPasswordComplete()
-  }
+  state.errorText = ''
+  dialog.tipSuccess('已解锁', () => {
+    if (getCurrentPages().length > 1) {
+      router.back()
+    } else {
+      uni.switchTab({ url: '/pages/wc' })
+    }
+  })
 }
 
-function onPasswordComplete() {
-  dialog.tipSuccess(`密码正确`)
-  setTimeout(() => {
-    state.password = ''
-  }, 1500)
+async function onForgot() {
+  if (!(await dialog.confirm('忘记锁屏密码将清除当前设置，确定继续？'))) return
+  Storage.remove(PIN_KEY)
+  state.hasPin = false
+  state.savedPin = ''
+  dialog.tipSuccess('锁屏密码已清除')
 }
+
+onReady(() => {
+  const saved = Storage.get<string>(PIN_KEY, '')
+  state.savedPin = saved || ''
+  state.hasPin = !!saved
+})
 </script>
+
+<style lang="scss" scoped>
+.lock-page {
+  min-height: 100vh;
+  background: var(--token-body);
+  display: flex;
+  flex-direction: column;
+}
+
+.lock-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 24px calc(24px + env(safe-area-inset-bottom, 0px));
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.lock-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 0 20px;
+}
+
+.lock-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lock-title {
+  margin-top: 16px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--token-text);
+}
+
+.lock-subtitle {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--token-text-secondary);
+}
+
+.setup-btn {
+  margin-top: 28px;
+  height: 44px;
+  padding: 0 24px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--token-text-inverse);
+  background: var(--token-primary);
+}
+</style>

@@ -23,7 +23,13 @@
           </view>
         </view>
       </view>
-      <c-list-status ref="listStatus" :loading="listLoading" :records="list.records" />
+      <c-list-status
+        ref="listStatus"
+        :loading="listLoading"
+        :records="list.records"
+        empty-text="暂无提现记录"
+        empty-hint="提交提现申请后可在这里查看进度"
+      />
     </view>
   </view>
 </template>

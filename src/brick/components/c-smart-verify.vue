@@ -62,7 +62,8 @@ const props = defineProps({
   },
   height: {
     type: String,
-    default: 'auto',
+    // 触控目标最小 40px，避免验证码按钮点不中
+    default: '40px',
   },
   captchaData: {
     type: Object,

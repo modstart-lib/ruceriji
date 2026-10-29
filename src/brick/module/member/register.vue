@@ -45,8 +45,8 @@
           </view>
           <div class="help">
             <view v-if="captchaVerify === ''" class="text-muted">
-              <icon-lucide-triangle-alert class="mr-1" />
-              输入图片验证码完成校验
+              <icon-lucide-info class="mr-1" />
+              请输入右侧图片中的验证码
             </view>
             <view v-if="captchaVerify === 'pass'" class="text-success">
               <icon-lucide-check class="mr-1" />

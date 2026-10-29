@@ -11,10 +11,14 @@
                   <icon-lucide-loader :size="120" class="animate-spin" />
                 </view>
               </view>
-              <view class="text-muted"> 正在获取... </view>
+              <view class="text-muted"> 正在获取授权信息... </view>
             </view>
           </view>
         </view>
+      </view>
+      <view v-else-if="failed" class="px-4 py-20 text-center">
+        <view class="text-muted text-sm leading-relaxed"> 授权信息已失效或获取失败，请返回重新登录 </view>
+        <view class="fallback-btn" @tap="doBackHome"> 返回 </view>
       </view>
       <view v-else class="px-4">
         <view class="mt-5 text-center">
@@ -161,6 +165,7 @@ const { ui, getPageDefaultTitle, autoSetNavigationBarColor } = useUi()
 const state = reactive({
   entryProcessorData: null,
   tryLogin: true,
+  failed: false,
   isSubmitting: false,
   captchaVerify: '',
   captchaVerifying: false,
@@ -177,14 +182,25 @@ const state = reactive({
   avatarEmpty: null,
   avatarUpload: null,
 })
-const { entryProcessorData, tryLogin, isSubmitting, captchaVerify, captchaVerifying, data, avatarEmpty, avatarUpload } =
-  toRefs(state)
+const {
+  entryProcessorData,
+  tryLogin,
+  failed,
+  isSubmitting,
+  captchaVerify,
+  captchaVerifying,
+  data,
+  avatarEmpty,
+  avatarUpload,
+} = toRefs(state)
 
 const captchaRef = ref<any>(null)
 
 async function doOauthCallback() {
   state.entryProcessorData = EntryProcessorUtil.getEntryProcessorData()
   if (!state.entryProcessorData) {
+    state.tryLogin = false
+    state.failed = true
     dialog.tipError('处理数据为空')
     return
   }
@@ -212,6 +228,8 @@ async function doOauthCallback() {
     doTryLogin()
   } catch {
     dialog.loadingOff()
+    state.tryLogin = false
+    state.failed = true
   }
 }
 
@@ -318,6 +336,16 @@ function onChooseAvatar(e) {
   state.avatarUpload = e.detail.avatarUrl
 }
 
+/** 授权失败后的唯一出口：能返回就返回，否则回首页 */
+function doBackHome() {
+  const pages = getCurrentPages()
+  if (pages.length > 1) {
+    router.back()
+    return
+  }
+  router.to('/pages/wc')
+}
+
 onShow(() => {
   Starter.boot(() => {
     doOauthCallback()
@@ -327,4 +355,18 @@ onShow(() => {
 
 <style lang="less" scoped>
 @import './style/style';
+
+.fallback-btn {
+  width: 140px;
+  height: 42px;
+  margin: 1.5rem auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  color: var(--token-text);
+  background-color: var(--token-surface);
+  border: 1px solid var(--token-border);
+}
 </style>

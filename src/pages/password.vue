@@ -1,77 +1,160 @@
 <template>
-  <view class="min-h-screen relative pb-6 bg-[#f7f8fa]">
+  <view class="lock-page">
     <c-page-header title="锁屏密码" background-color="transparent" color="#111111" />
-    <view class="p-3">
-      <view class="text-center mb-6 text-xl font-bold" style="color: #111111">请输入原密码</view>
-      <view class="flex justify-center">
-        <u-number-box v-for="(_, i) in passwordDots" :key="i" />
-      </view>
-      <view class="password-display flex justify-center mb-10 mt-4">
-        <view
-          v-for="(_, i) in 6"
-          :key="i"
-          class="w-8 h-8 rounded-full border border-gray-200 mx-2 flex items-center justify-center bg-white shadow-sm"
-        >
-          <view
-            v-if="i < password.length"
-            class="w-3.5 h-3.5 rounded-full"
-            style="background-color: var(--color-rc-primary); box-shadow: 0 2px 8px rgba(250, 224, 88, 0.5)"
-          />
+
+    <view class="lock-body">
+      <view class="lock-intro">
+        <view class="lock-icon">
+          <icon-lucide-lock :size="26" color="#111111" />
         </view>
+        <view class="lock-title">{{ title }}</view>
+        <view class="lock-subtitle">{{ subtitle }}</view>
       </view>
-      <!-- 数字键盘 -->
-      <view class="grid grid-cols-3 gap-4 px-4">
-        <view
-          v-for="n in [1, 2, 3, 4, 5, 6, 7, 8, 9, '', 0, 'del']"
-          :key="n"
-          class="text-center py-5 text-2xl font-bold rounded-3xl transition-transform active:scale-95"
-          :class="
-            n !== ''
-              ? 'bg-white text-[#111111] border border-gray-100/50 shadow-[0_8px_30px_rgb(0,0,0,0.03)] cursor-pointer'
-              : ''
-          "
-          @click="onKeyPress(n)"
-        >
-          <template v-if="n === 'del'">
-            <view class="flex items-center justify-center h-full"
-              ><icon-lucide-delete :size="28" color="#111111"
-            /></view>
-          </template>
-          <template v-else>{{ n }}</template>
-        </view>
-      </view>
+
+      <PinPad
+        ref="padRef"
+        :error="errorText"
+        :show-forgot="mode === 'verify'"
+        @complete="onComplete"
+        @forgot="onForgot"
+      />
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
+import { Storage } from '@/brick/lib/storage'
+import { router } from '@/brick/lib/router'
 import { dialog } from '@/brick/lib/dialog'
-import { reactive, toRefs } from 'vue'
+import { onReady } from '@dcloudio/uni-app'
+import { computed, reactive, ref, toRefs } from 'vue'
+import PinPad from './components/PinPad.vue'
 
 defineOptions({ name: 'PasswordPage' })
 
-const state = reactive({
-  password: '',
-})
-const { password } = toRefs(state)
+const PIN_KEY = 'rucerijiLockPin'
 
-function onKeyPress(key) {
-  if (key === '') return
-  if (key === 'del') {
-    state.password = state.password.slice(0, -1)
+const state = reactive({
+  /** set → 设置；confirm → 再次确认；verify → 校验原密码 */
+  mode: 'set',
+  firstPin: '',
+  errorText: '',
+})
+const { mode, firstPin, errorText } = toRefs(state)
+
+const padRef = ref<InstanceType<typeof PinPad> | null>(null)
+
+const title = computed(() => {
+  if (state.mode === 'verify') return '请输入原密码'
+  if (state.mode === 'confirm') return '再次输入以确认'
+  return '设置 6 位数字密码'
+})
+
+const subtitle = computed(() => {
+  if (state.mode === 'verify') return '锁屏仅用于防止误触，数据仍保存在你的账号中'
+  if (state.mode === 'confirm') return '两次输入需要一致'
+  return '用于解锁 App，忘记可在验证页重置'
+})
+
+function fail(text: string) {
+  state.errorText = text
+  padRef.value?.reset()
+}
+
+function onComplete(pin: string) {
+  state.errorText = ''
+
+  if (state.mode === 'set') {
+    state.firstPin = pin
+    state.mode = 'confirm'
+    padRef.value?.reset()
     return
   }
-  if (state.password.length >= 6) return
-  state.password += key.toString()
-  if (state.password.length === 6) {
-    onPasswordComplete()
+
+  if (state.mode === 'confirm') {
+    if (pin !== state.firstPin) {
+      state.mode = 'set'
+      state.firstPin = ''
+      fail('两次输入不一致，请重新设置')
+      return
+    }
+    Storage.set(PIN_KEY, pin)
+    dialog.tipSuccess('锁屏密码已设置', () => router.back())
+    return
   }
+
+  const saved = Storage.get<string>(PIN_KEY, '')
+  if (pin !== saved) {
+    fail('密码错误，请重试')
+    return
+  }
+  dialog.tipSuccess('已解锁', () => router.back())
 }
 
-function onPasswordComplete() {
-  dialog.tipSuccess(`密码已输入: ${state.password}`)
-  setTimeout(() => {
-    state.password = ''
-  }, 1500)
+async function onForgot() {
+  if (!(await dialog.confirm('忘记锁屏密码将清除当前设置，确定继续？'))) return
+  Storage.remove(PIN_KEY)
+  dialog.tipSuccess('锁屏密码已清除', () => router.back())
 }
+
+onReady(() => {
+  const saved = Storage.get<string>(PIN_KEY, '')
+  state.mode = saved ? 'verify' : 'set'
+})
 </script>
+
+<style lang="scss" scoped>
+.lock-page {
+  min-height: 100vh;
+  background: var(--token-body);
+  display: flex;
+  flex-direction: column;
+}
+
+.lock-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 24px calc(24px + env(safe-area-inset-bottom, 0px));
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.lock-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 0 20px;
+}
+
+.lock-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lock-title {
+  margin-top: 16px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--token-text);
+}
+
+.lock-subtitle {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--token-text-secondary);
+}
+</style>

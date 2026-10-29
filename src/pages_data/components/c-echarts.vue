@@ -1,5 +1,5 @@
 <template>
-  <UniEcharts :option="option" :custom-style="{ width: '100%', height: `${height}px` }" />
+  <UniEcharts :option="option" :autoresize="true" :custom-style="{ width: '100%', height: `${height}px` }" />
 </template>
 
 <script setup lang="ts">

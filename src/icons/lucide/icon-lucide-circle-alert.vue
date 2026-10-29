@@ -8,6 +8,7 @@
 </template>
 <script setup>
 import { computed } from 'vue'
+import { resolveIconColor } from './_token-colors.js'
 const props = defineProps({
   color: { type: String, default: '' },
   size: { default: '1em' },
@@ -18,7 +19,9 @@ const _urldef = '%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20w
 const _sz = computed(() => typeof props.size === 'number' ? props.size + 'px' : props.size || '1em')
 const _sty = computed(() => `width:${_sz.value};height:${_sz.value}`)
 const _h5svg = computed(() => props.color ? _tpl.replace(/currentColor/g, props.color) : _tpl)
-const _url = computed(() => props.color ? encodeURIComponent(_mp.replace(/currentColor/g, props.color)) : _urldef)
+// 小程序端背景图里的 SVG 解析不了 var(--token-x)，先换算成具体色值
+const _mpcolor = computed(() => resolveIconColor(props.color))
+const _url = computed(() => _mpcolor.value ? encodeURIComponent(_mp.replace(/currentColor/g, _mpcolor.value)) : _urldef)
 const _mpsty = computed(() => `width:${_sz.value};height:${_sz.value};background-image:url("data:image/svg+xml,${_url.value}")`)
 </script>
 <style>
@@ -26,6 +29,14 @@ const _mpsty = computed(() => `width:${_sz.value};height:${_sz.value};background
   display: inline-block;
   flex-shrink: 0;
   vertical-align: middle;
+  line-height: 0;
+}
+/* H5 内联 SVG 必须块级铺满：父容器若带 line-height（如按钮的 48px），
+   inline 的 svg 会按父级行高落基线，图标整体下沉数像素 */
+.lucide-icon > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 .lucide-icon-mp {
   background-size: contain;

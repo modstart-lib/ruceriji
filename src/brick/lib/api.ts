@@ -8,12 +8,23 @@ interface RequestOptions {
 }
 
 function getApiBase(): string {
+  let base = SystemSetting.apiBase || '/api/'
   // #ifdef H5
   if (typeof window !== 'undefined' && (window as any).__msApi) {
-    return (window as any).__msApi
+    base = (window as any).__msApi
   }
   // #endif
-  return SystemSetting.apiBase || '/api/'
+  // 接口地址变化（如 dev 时切换 proxy 目标）后旧登录态不再有效，直接清掉，避免页面静默空白
+  const tokenKey = AppSetting.tokenKey || 'api-token'
+  const marker = base + '|' + (import.meta.env.VITE_PROXY_TARGET || '')
+  const prevMarker = uni.getStorageSync('api-base-marker')
+  if (prevMarker !== marker) {
+    uni.setStorageSync('api-base-marker', marker)
+    if (prevMarker) {
+      uni.removeStorageSync(tokenKey)
+    }
+  }
+  return base
 }
 
 function request(url: string, data: Record<string, any> = {}, options: RequestOptions = {}): Promise<any> {
@@ -74,14 +85,14 @@ const getApiState = () => {
   try {
     const userStore = useUserStore()
     return {
-      baseUrl: SystemSetting.apiBase || '/api/',
+      baseUrl: getApiBase(),
       tokenKey: AppSetting.tokenKey || 'api-token',
       token: userStore.token || uni.getStorageSync(AppSetting.tokenKey || 'api-token') || '',
       debug: SystemSetting.apiDebug || false,
     }
   } catch (e) {
     return {
-      baseUrl: SystemSetting.apiBase || '/api/',
+      baseUrl: getApiBase(),
       tokenKey: AppSetting.tokenKey || 'api-token',
       token: uni.getStorageSync(AppSetting.tokenKey || 'api-token') || '',
       debug: false,
@@ -295,7 +306,7 @@ export const Api = {
     option?: any,
     cacheMinutes?: number
   ) {
-    const cacheKey = `api_cache_${url}_${JSON.stringify(param)}`
+    const cacheKey = `api_cache_${getApiBase()}_${url}_${JSON.stringify(param)}`
     const cached = uni.getStorageSync(cacheKey)
     if (cached) {
       successCb && successCb(cached)

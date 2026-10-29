@@ -23,7 +23,7 @@
           class="flex w-full items-center justify-center py-2.5 px-5 text-base rounded-full bg-primary text-white cursor-pointer"
           @click="doSubmit()"
         >
-          登录
+          确认修改
         </button>
       </view>
     </view>

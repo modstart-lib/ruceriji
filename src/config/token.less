@@ -39,10 +39,55 @@ page {
   /* 布局背景（亮色） */
   --token-surface: #ffffff;
   --token-panel: #f9fafb;
-  --token-body: #f8f8f8;
+  --token-body: #f7f8fa;
 
   /* 正文（默认黑 #111111） */
   --token-text: #111111;
+  /* 文字层级：辅助文字必须 ≥4.5:1，禁用态才允许浅色 */
+  --token-text-secondary: #6b6b6b; /* 5.33:1 on #fff */
+  --token-text-tertiary: #7a7a7a; /* 4.29:1 on #fff，仅 ≥16px 或非关键信息 */
+  --token-text-disabled: #b0b0b0; /* 2.17:1，仅禁用态 */
+  --token-text-inverse: #ffffff;
+
+  /* 语义底色（浅底 + 深字，避免页面直接引用 Tailwind 调色板） */
+  --token-info: #0b6bcb;
+  --token-info-bg: rgba(11, 107, 203, 0.07);
+  --token-info-border: rgba(11, 107, 203, 0.16);
+  --token-success-bg: rgba(82, 196, 26, 0.12);
+  --token-success-text: #2f7a10;
+  --token-warning-text: #8a5a00;
+  --token-warning-bg: rgba(250, 173, 20, 0.12);
+  --token-warning-border: rgba(250, 173, 20, 0.26);
+  --token-error-bg: rgba(255, 77, 79, 0.08);
+
+  /* 选择器 / 分段控件 */
+  --token-chip-bg: #f4f4f5;
+  --token-chip-border: rgba(0, 0, 0, 0.06);
+  --token-chip-active-bg: #ffffff;
+  --token-chip-active-border: #111111;
+
+  /* 图表色板：明度分层，保证灰度打印与色弱也能区分 */
+  --chart-1: #111111;
+  --chart-2: #d9bc33;
+  --chart-3: #8f59cf;
+  --chart-4: #6b6b6b;
+  --chart-5: #a98e1f;
+  --chart-6: #c4c4c4;
+
+  /* 阴影：统一 rgba 写法（4 参数 rgb 在部分 WebView 会被丢弃） */
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.02);
+  --shadow-float: 0 8px 30px rgba(0, 0, 0, 0.04);
+  --shadow-cta: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-bar: 0 -4px 20px rgba(0, 0, 0, 0.03);
+  --shadow-chip: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+  /* 描边 / 分隔线（比 Tailwind gray-100 更轻，避免卡片描边过重） */
+  --token-border: rgba(0, 0, 0, 0.06);
+  --token-divider: rgba(0, 0, 0, 0.045);
+
+  /* 布局尺寸 */
+  --tabbar-h: 50px;
+  --bottom-bar-h: 84px;
 
   /* Glass（亮色） */
   --token-glass: rgba(255, 255, 255, 0.7);
@@ -91,6 +136,34 @@ page {
   --token-surface: #111827;
   --token-panel: #1f2937;
   --token-text: #f3f4f6;
+  --token-text-secondary: #a3a3a3;
+  --token-text-tertiary: #8a8a8a;
+  --token-text-disabled: #525252;
+  --token-text-inverse: #111111;
+
+  --token-info: #6cb0ff;
+  --token-info-bg: rgba(108, 176, 255, 0.12);
+  --token-info-border: rgba(108, 176, 255, 0.24);
+  --token-success-bg: rgba(82, 196, 26, 0.16);
+  --token-success-text: #8fd67a;
+  --token-warning-text: #ffd666;
+  --token-warning-bg: rgba(250, 173, 20, 0.18);
+  --token-warning-border: rgba(250, 173, 20, 0.3);
+  --token-error-bg: rgba(255, 77, 79, 0.16);
+
+  --token-border: rgba(255, 255, 255, 0.1);
+  --token-divider: rgba(255, 255, 255, 0.08);
+  --token-chip-bg: #262626;
+  --token-chip-border: rgba(255, 255, 255, 0.08);
+  --token-chip-active-bg: #111827;
+  --token-chip-active-border: #f3f4f6;
+
+  --chart-1: #f3f4f6;
+  --chart-2: #d9bc33;
+  --chart-3: #b18ce8;
+  --chart-4: #a3a3a3;
+  --chart-5: #a98e1f;
+  --chart-6: #525252;
 
   --token-glass: rgba(31, 41, 55, 0.7);
   --token-glass-hover: rgba(31, 41, 55, 0.9);

@@ -6,75 +6,43 @@
         <view class="w-14 h-14 rounded-full bg-primary flex items-center justify-center mb-3">
           <icon-lucide-sparkles :size="28" color="#ffffff" />
         </view>
-        <text class="text-sm text-gray-400">登录后享受更多功能</text>
+        <text class="text-sm text-text-secondary">登录后享受更多功能</text>
       </view>
+      <!-- 平台分支用条件编译隔离：微信小程序包里不会编译 App 的按钮，反之亦然 -->
       <!-- #ifdef MP-WEIXIN -->
-      <view class="px-1 pb-2 relative">
-        <view v-if="needAgree && !agreeChecked" class="absolute inset-0" style="z-index: 10" @tap="checkAgree"></view>
-        <button
-          class="w-full after:border-none"
-          hover-class="opacity-80"
-          :style="[
-            'height:48px;line-height:48px;border-radius:24px;border:none;background:#07C160;padding:0;',
-            needAgree && !agreeChecked ? 'opacity:0.4' : '',
-          ]"
-          @tap="doWechatMiniProgramLogin"
-        >
-          <view class="flex flex-row items-center justify-center" style="height: 48px">
-            <icon-lucide-message-circle :size="18" color="#ffffff" />
-            <text style="color: #ffffff; margin-left: 6px; font-size: 15px; font-weight: bold">微信一键登录</text>
-          </view>
-        </button>
-        <view class="text-center mt-4" @tap="doLoginAccount">
-          <text class="text-gray-400 text-sm">账号密码登录 →</text>
-        </view>
-      </view>
+      <LoginButtonsWeixin
+        :need-agree="needAgree"
+        :agree-checked="agreeChecked"
+        @agree="checkAgree"
+        @login="doWechatMiniProgramLogin"
+        @account="doLoginAccount"
+      />
       <!-- #endif -->
       <!-- #ifdef APP-PLUS -->
-      <view class="px-1 pb-2 relative">
-        <view v-if="needAgree && !agreeChecked" class="absolute inset-0" style="z-index: 10" @tap="checkAgree"></view>
-        <button
-          v-if="isWechatInstalled"
-          class="w-full after:border-none"
-          hover-class="opacity-80"
-          :style="[
-            'height:48px;line-height:48px;border-radius:24px;border:none;background:#07C160;padding:0;',
-            needAgree && !agreeChecked ? 'opacity:0.4' : '',
-          ]"
-          @tap="doWechatLogin"
-        >
-          <view class="flex flex-row items-center justify-center" style="height: 48px">
-            <icon-lucide-message-circle :size="18" color="#ffffff" />
-            <text style="color: #ffffff; margin-left: 6px; font-size: 15px; font-weight: bold">微信登录</text>
-          </view>
-        </button>
-        <button
-          v-if="isIos"
-          class="w-full after:border-none mt-3"
-          hover-class="opacity-80"
-          :style="[
-            'height:48px;line-height:48px;border-radius:24px;border:none;background:#000000;padding:0;',
-            needAgree && !agreeChecked ? 'opacity:0.4' : '',
-          ]"
-          @tap="doAppleLogin"
-        >
-          <view class="flex flex-row items-center justify-center" style="height: 48px">
-            <icon-lucide-apple :size="18" color="#ffffff" />
-            <text style="color: #ffffff; margin-left: 6px; font-size: 15px; font-weight: bold">Apple 登录</text>
-          </view>
-        </button>
-        <button
-          class="w-full after:border-none mt-3"
-          hover-class="opacity-80"
-          style="height:48px;line-height:48px;border-radius:24px;border:1px solid #d1d5db;background:#ffffff;padding:0;"
-          @tap="doLoginAccount"
-        >
-          <view class="flex flex-row items-center justify-center" style="height: 48px">
-            <icon-lucide-user :size="18" color="#374151" />
-            <text style="color: #374151; margin-left: 6px; font-size: 15px; font-weight: bold">账号密码登录</text>
-          </view>
-        </button>
-      </view>
+      <LoginButtonsApp
+        :need-agree="needAgree"
+        :agree-checked="agreeChecked"
+        :is-wechat-installed="isWechatInstalled"
+        :is-ios="isIos"
+        @agree="checkAgree"
+        @login-wechat="doWechatLogin"
+        @login-apple="doAppleLogin"
+        @account="doLoginAccount"
+      />
+      <!-- #endif -->
+      <!-- #ifdef H5 -->
+      <!-- 仅为开发期模拟引入（?sim-platform=mp-weixin|app），生产 H5 不渲染 -->
+      <LoginButtonsSim
+        :need-agree="needAgree"
+        :agree-checked="agreeChecked"
+        :is-wechat-installed="isWechatInstalled"
+        :is-ios="isIos"
+        @agree="checkAgree"
+        @login-weixin="doWechatMiniProgramLogin"
+        @login-app="doWechatLogin"
+        @login-apple="doAppleLogin"
+        @account="doLoginAccount"
+      />
       <!-- #endif -->
       <!-- 协议区 -->
       <view v-if="config.Member_AgreementEnable || config.Member_PrivacyEnable" class="pt-3 pb-1 px-1">
@@ -85,7 +53,7 @@
           >
             <u-checkbox name="1" :size="18" shape="circle" active-color="var(--color-primary)"></u-checkbox>
           </u-checkbox-group>
-          <text class="text-xs text-gray-400" @tap="agreeChecked = !agreeChecked">我已阅读并同意</text>
+          <text class="text-xs text-text-secondary" @tap="agreeChecked = !agreeChecked">我已阅读并同意</text>
           <c-smart-link
             v-if="config.Member_AgreementEnable"
             class="text-primary"
@@ -110,9 +78,20 @@
 import { useConfig } from '@/brick/composables/useBaseStore'
 import { registerLoginDialog, unregisterLoginDialog } from '@/brick/composables/useLoginDialog'
 import { dialog } from '@/brick/lib/dialog'
+import { useLoginDialogPlatform } from '@/brick/lib/platform'
 import { router } from '@/brick/lib/router'
-import { useOauthLogin } from '../../module/member/components/OauthScript'
+import { useOauthLogin } from '@/brick/composables/useOauthLogin'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+// 条件编译引入：各端包里只保留自己那套按钮
+// #ifdef MP-WEIXIN
+import LoginButtonsWeixin from './components/LoginButtonsWeixin.vue'
+// #endif
+// #ifdef APP-PLUS
+import LoginButtonsApp from './components/LoginButtonsApp.vue'
+// #endif
+// #ifdef H5
+import LoginButtonsSim from './components/LoginButtonsSim.vue'
+// #endif
 
 defineOptions({ name: 'BuiMemberLoginDialog' })
 
@@ -128,13 +107,8 @@ let thisCtx: any = null
 let thisSuccessCallback: (() => void) | null = null
 let myRoute = ''
 
-const support = computed(() => {
-  let support = false
-  // #ifdef MP-WEIXIN || APP-PLUS
-  support = true
-  // #endif
-  return support
-})
+/** 微信小程序 / App 才用弹窗登录，其余平台由调用方降级到登录页 */
+const support = computed(() => useLoginDialogPlatform())
 
 const { isIos, isWechatInstalled, doWechatMiniProgramLoginProcess, doWechatLogin, doAppleLogin } = useOauthLogin({
   beforeLogin: () => checkAgree(),

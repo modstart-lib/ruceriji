@@ -1,18 +1,12 @@
 <template>
-  <view class="pb-module-system-search" style="min-height: 100vh">
-    <c-page-header-holder title="搜索" />
-    <view class="ub-search-mobile-bar page" :style="headStyle">
-      <view class="left">
-        <view class="item" @click="doCancel">
-          <icon-lucide-chevron-left class="icon" />
-        </view>
-      </view>
-      <view class="center">
-        <view class="box">
-          <icon-lucide-search class="icon" />
+  <view class="pb-module-system-search">
+    <view class="search-header" :style="{ paddingTop: statusBarHeight }">
+      <view class="search-row">
+        <view class="search-box">
+          <icon-lucide-search class="search-box__icon" :size="16" />
           <input
             type="text"
-            class="input"
+            class="search-box__input"
             :value="value"
             :placeholder="inputPlaceholder"
             confirm-type="search"
@@ -20,62 +14,34 @@
             @input="onInput"
             @confirm="doConfirmSearch"
           />
+          <view v-if="!!value" class="search-box__clear" @tap="doClearSearch">
+            <icon-lucide-x :size="16" />
+          </view>
         </view>
-      </view>
-      <view v-if="!!value" class="right" @tap="doConfirm">
-        <view class="item text-primary"> 确定 </view>
-      </view>
-      <view v-if="!value" class="right" @tap="doCancel">
-        <view class="item"> 取消 </view>
-      </view>
-      <view v-if="!!value" class="right" @tap="doClearSearch">
-        <view class="item"> 清除 </view>
+        <view class="search-cancel" @tap="doCancel">取消</view>
       </view>
     </view>
-    <view>
-      <view class="bg-white rounded-xl mb-2">
-        <view class="head">
-          <view class="more">
-            <view
-              v-if="keywordsList.length > 0"
-              class="text-tertiary w-10 h-8 text-right inline-block"
-              @click="isDeleting = !isDeleting"
-            >
-              <icon-lucide-settings />
-            </view>
-            <view
-              v-if="keywordsList.length > 0"
-              class="text-tertiary w-10 h-8 text-right inline-block"
-              @click="doClear"
-            >
-              <icon-lucide-trash-2 />
-            </view>
+    <view class="history-card">
+      <view class="history-head">
+        <view class="history-title">历史搜索</view>
+        <view v-if="keywordsList.length > 0" class="history-actions">
+          <view class="history-action" @tap="isDeleting = !isDeleting">
+            <icon-lucide-settings :size="16" />
           </view>
-          <view class="flex-1 ml-2 text-sm text-gray-700"> 历史搜索 </view>
-        </view>
-        <view v-if="keywordsList.length > 0" class="body">
-          <view
-            v-for="(k, kIndex) in keywordsList"
-            :key="kIndex"
-            class="search-item bg-gray-100 inline-block px-3 rounded-2xl text-gray-800 mr-2 mb-1 max-w-full relative"
-            @tap="doSearch(k)"
-          >
-            <view class="truncate leading-8">
-              {{ k ? k : '[空]' }}
-            </view>
-            <view
-              v-if="isDeleting"
-              class="w-4 h-4 leading-4 text-white bg-gray-300 rounded text-center rounded-full absolute -right-1 -top-1"
-              @tap="doDelete(kIndex)"
-            >
-              <icon-lucide-x />
-            </view>
+          <view class="history-action" @tap="doClear">
+            <icon-lucide-trash-2 :size="16" />
           </view>
-        </view>
-        <view v-else class="body">
-          <c-empty text="暂无搜索记录" />
         </view>
       </view>
+      <view v-if="keywordsList.length > 0" class="history-tags">
+        <view v-for="(k, kIndex) in keywordsList" :key="kIndex" class="history-tag" @tap="doSearch(k)">
+          <text class="history-tag__text">{{ k ? k : '[空]' }}</text>
+          <view v-if="isDeleting" class="history-tag__remove" @tap.stop="doDelete(kIndex)">
+            <icon-lucide-x :size="12" />
+          </view>
+        </view>
+      </view>
+      <c-empty v-else small text="暂无搜索记录" />
     </view>
   </view>
 </template>
@@ -108,9 +74,7 @@ const inputPlaceholder = computed(() => {
   return state.placeholder
 })
 
-const headStyle = computed(() => {
-  return ['padding-right: ' + SystemConfig.HeadMenuWidth + 'px'].join(';')
-})
+const statusBarHeight = computed(() => (SystemConfig.StatusHeight ?? 0) + 'px')
 
 function init() {
   state.keywordsList = Storage.getArray('SearchKeywordHistory', [])
@@ -190,23 +154,142 @@ onReady(() => {
 </script>
 
 <style lang="less" scoped>
-// #ifdef MP-WEIXIN
-.ub-search-mobile-bar {
-  .center .box .input {
-    top: 0;
-  }
-}
-
-// #endif
 .pb-module-system-search {
-  background-color: var(--color-body-bg);
+  min-height: 100vh;
+  background-color: var(--token-body);
 
-  :deep(.bg-white.rounded-xl.mb-2) {
-    background-color: var(--color-body-bg);
+  .search-header {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    padding-bottom: 0.5rem;
+    background-color: var(--token-surface);
 
-    .search-item {
-      background: var(--color-content-bg);
-      color: var(--color-text);
+    .search-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      height: 44px;
+    }
+
+    .search-box {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      gap: 0.35rem;
+      height: 36px;
+      padding: 0 0.75rem;
+      border-radius: 999px;
+      background-color: var(--token-chip-bg);
+      color: var(--token-text-secondary);
+
+      &__icon {
+        flex-shrink: 0;
+      }
+
+      &__input {
+        flex: 1;
+        min-width: 0;
+        height: 100%;
+        font-size: 0.875rem;
+        color: var(--token-text);
+      }
+
+      &__clear {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: rgba(0, 0, 0, 0.06);
+        color: var(--token-text-secondary);
+      }
+    }
+
+    .search-cancel {
+      flex-shrink: 0;
+      padding: 0 0.25rem;
+      font-size: 0.875rem;
+      color: var(--token-text);
+
+      &:active {
+        opacity: 0.6;
+      }
+    }
+  }
+
+  .history-card {
+    margin: 0.5rem 0.75rem;
+    padding: 0.875rem 1rem 1rem;
+    border-radius: 1rem;
+    background-color: var(--token-surface);
+
+    .history-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 24px;
+    }
+
+    .history-title {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--token-text);
+    }
+
+    .history-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .history-action {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      color: var(--token-text-secondary);
+    }
+
+    .history-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .history-tag {
+      position: relative;
+      max-width: 100%;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      background-color: var(--token-chip-bg);
+
+      &__text {
+        display: block;
+        overflow: hidden;
+        font-size: 0.8125rem;
+        line-height: 1.25rem;
+        color: var(--token-text);
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      &__remove {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background-color: rgba(0, 0, 0, 0.35);
+        color: #ffffff;
+      }
     }
   }
 }

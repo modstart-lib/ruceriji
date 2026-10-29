@@ -5,12 +5,20 @@
       <view class="text-[80px] mb-6">🔍</view>
       <view class="text-2xl font-bold text-[#111111] mb-2">页面不存在</view>
       <view class="text-sm text-[#111111]/50 text-center mb-10">你访问的页面已失效或地址有误</view>
-      <view
-        class="px-8 py-3 rounded-full text-white text-sm font-semibold active:opacity-70"
-        style="background-color: #111111"
-        @click="goBack"
-        >返回上一页</view
-      >
+      <view class="flex items-center gap-3">
+        <view
+          class="px-7 py-3 rounded-full text-sm font-semibold active:opacity-70"
+          style="background-color: #111111; color: #ffffff"
+          @click="goHome"
+          >回到首页</view
+        >
+        <view
+          class="px-7 py-3 rounded-full text-sm font-semibold active:opacity-70"
+          style="background: #ffffff; color: #111111; border: 1px solid rgba(0, 0, 0, 0.1)"
+          @click="goBack"
+          >返回上一页</view
+        >
+      </view>
     </view>
   </view>
 </template>
@@ -32,5 +40,9 @@ function goBack() {
   } else {
     uni.reLaunch({ url: '/pages/wc' })
   }
+}
+
+function goHome() {
+  uni.reLaunch({ url: '/pages/wc' })
 }
 </script>

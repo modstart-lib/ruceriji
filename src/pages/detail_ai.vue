@@ -1,81 +1,131 @@
 <template>
-  <view class="min-h-screen relative pb-[80rpx] bg-[#f8fafc]">
-    <c-page-header title="结果智能分析" background-color="transparent" color="#0f172a" />
+  <view class="ai-page min-h-screen relative bg-[var(--token-body)]">
+    <c-page-header title="AI 分析" background-color="transparent" color="#111111" />
 
     <c-loading v-if="loading" page />
 
-    <view v-else class="px-4 mt-2 mb-6">
-      <view
-        class="bg-gradient-to-br from-indigo-50 to-blue-50/50 rounded-3xl p-6 shadow-sm border border-indigo-100/50 relative overflow-hidden"
-      >
-        <!-- AI 装饰背景 -->
-        <view class="absolute -right-6 -top-6 w-32 h-32 bg-blue-400/10 rounded-full blur-2xl"></view>
-        <view class="absolute -left-10 -bottom-10 w-40 h-40 bg-indigo-400/10 rounded-full blur-2xl"></view>
-
-        <!-- 头部信息区 -->
-        <view class="relative z-10 flex justify-between items-center mb-6 pb-4 border-b border-indigo-100/60">
-          <view class="flex items-center">
-            <view
-              class="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-blue-500 flex items-center justify-center shadow-md shadow-indigo-200"
-            >
-              <icon-lucide-sparkles :size="20" color="#ffffff" />
+    <view v-else class="ai-body px-3 pt-2 pb-8">
+      <!-- 结论卡：AI 身份 + 生成时间 + 状态 -->
+      <view class="ai-hero">
+        <view class="flex items-center justify-between gap-3">
+          <view class="flex items-center min-w-0">
+            <view class="ai-badge flex items-center justify-center flex-shrink-0">
+              <icon-lucide-sparkles :size="18" color="#ffffff" />
             </view>
-            <view class="ml-3">
-              <view class="text-[30rpx] font-bold text-gray-800 tracking-wide">AI 深度洞察</view>
-              <view class="text-[22rpx] text-gray-500 mt-1 flex items-center">
-                <icon-lucide-calendar :size="12" class="mr-1 opacity-70" />
-                {{ record.time }}
+            <view class="ml-2.5 min-w-0">
+              <view class="text-base font-bold text-[#111111] leading-tight">AI 深度洞察</view>
+              <view class="text-xs mt-1 flex items-center text-text-secondary">
+                <icon-lucide-clock :size="11" class="mr-1" />
+                <text class="truncate">{{ recordTimeText }}</text>
               </view>
             </view>
           </view>
-          <view
-            class="bg-indigo-100/80 text-indigo-600 px-3 py-1 rounded-full text-[22rpx] font-medium flex items-center"
-          >
-            <icon-lucide-circle-check :size="12" class="mr-1" />
+          <view class="ai-status flex-shrink-0">
+            <icon-lucide-circle-check :size="11" class="mr-1" />
             分析完成
           </view>
         </view>
+      </view>
 
-        <!-- 内容区域 -->
-        <view
-          class="relative z-10 bg-white/70 backdrop-blur-sm rounded-2xl p-5 border border-white/50 shadow-sm"
-          style="min-height: 50vh"
-        >
-          <c-rich-html :value="response.content" class="text-gray-700 leading-relaxed text-[28rpx]" />
-        </view>
-
-        <!-- 底部提示 -->
-        <view
-          class="relative z-10 mt-6 flex py-3 px-4 bg-amber-50/80 rounded-xl border border-amber-100/50 items-start"
-        >
-          <icon-lucide-info :size="16" color="#d97706" class="mr-2 mt-0.5 shrink-0" />
-          <view class="text-[24rpx] text-amber-700/80 leading-snug">
-            以上内容由 AI 大模型基于您的记录智能生成，本报告仅供参考，不作为临床诊断依据，请在做出任何医疗决定前咨询专业医生。
-          </view>
-        </view>
-
-        <!-- 参考文献 -->
-        <view class="relative z-10 mt-4 py-4 px-4 bg-gray-50/80 rounded-xl border border-gray-100/60">
-          <view class="flex items-center mb-3">
-            <icon-lucide-book-open :size="14" color="#64748b" class="mr-2 shrink-0" />
-            <view class="text-[24rpx] font-semibold text-gray-600">数据来源与参考文献</view>
-          </view>
-          <view class="space-y-2">
-            <view class="flex items-start">
-              <view class="text-[22rpx] text-gray-400 mr-2 shrink-0 mt-0.5">[1]</view>
-              <view class="text-[22rpx] text-gray-500 leading-snug">
-                中国营养学会.《中国居民膳食指南（2022）》. 人民卫生出版社, 2022.
-              </view>
+      <!-- 结构化结果（新数据 / 可从历史 HTML 解析时） -->
+      <template v-if="hasStructure">
+        <view v-if="report.score !== null || report.summary" class="score-card">
+          <view class="score-head">
+            <view class="flex items-end">
+              <text class="score-num">{{ report.score !== null ? report.score : '--' }}</text>
+              <text class="score-unit">/ 100</text>
+              <view v-if="report.level" class="score-level">{{ report.level }}</view>
             </view>
-            <view class="flex items-start">
-              <view class="text-[22rpx] text-gray-400 mr-2 shrink-0 mt-0.5">[2]</view>
-              <view class="text-[22rpx] leading-snug">
-                <text class="text-gray-500">中国营养学会膳食指南官方网站：</text>
-                <text
-                  class="text-indigo-500 underline"
-                  @tap="openGuidelineUrl"
-                >dg.cnsoc.org</text>
-              </view>
+            <view v-if="report.meta" class="score-meta flex items-center">
+              <icon-lucide-timer :size="12" class="mr-1" />
+              {{ report.meta }}
+            </view>
+          </view>
+
+          <view v-if="report.score !== null" class="score-track">
+            <view class="score-fill" :style="{ width: `${report.score}%` }" />
+          </view>
+
+          <view v-if="report.summary" class="score-summary">{{ report.summary }}</view>
+        </view>
+
+        <!-- 要点：维度 + 结果 + 说明 -->
+        <view v-if="report.points.length" class="points-card">
+          <view
+            v-for="(point, index) in report.points"
+            :key="`${point.label}-${index}`"
+            class="point-row"
+            :class="{ 'is-last': index === report.points.length - 1 }"
+          >
+            <view class="point-label">{{ point.label }}</view>
+            <view class="point-body">
+              <view v-if="point.value" class="point-value">{{ point.value }}</view>
+              <view v-if="point.note" class="point-note">{{ point.note }}</view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 建议 -->
+        <view v-if="report.advice" class="advice-card">
+          <view class="advice-title">
+            <icon-lucide-lightbulb :size="14" class="mr-1.5" />
+            今日建议
+          </view>
+          <view class="advice-text">{{ report.advice }}</view>
+        </view>
+      </template>
+
+      <!-- 兜底：解析不出结构的旧数据，保持原样渲染，内容不丢 -->
+      <view
+        v-else-if="report.legacyHtml"
+        class="ai-content mt-3 bg-white rounded-3xl border border-[var(--token-border)] p-4 shadow-card"
+      >
+        <c-rich-html :value="report.legacyHtml" class="text-[#111111]/85 text-[14px]" />
+      </view>
+
+      <!-- 还没有分析结果 -->
+      <view v-else class="empty-card">
+        <view class="empty-icon">
+          <icon-lucide-sparkles :size="28" color="#111111" />
+        </view>
+        <view class="empty-title">分析结果还没生成</view>
+        <view class="empty-desc">返回记录详情，点「智能分析」重新生成一份报告</view>
+      </view>
+
+      <!-- 免责声明 -->
+      <view
+        class="mt-3 flex items-start gap-2 rounded-2xl p-3 border"
+        style="background: var(--token-warning-bg); border-color: var(--token-warning-border)"
+      >
+        <icon-lucide-info :size="14" color="var(--token-warning)" class="mt-0.5 shrink-0" />
+        <view class="text-xs leading-relaxed" style="color: var(--token-warning-text)">
+          内容由 AI 大模型基于你的记录生成，仅供参考，不作为临床诊断依据；做出医疗决定前请咨询专业医生。
+        </view>
+      </view>
+
+      <!-- 数据来源：默认收起 -->
+      <view class="mt-3 rounded-2xl border border-[var(--token-border)] bg-white overflow-hidden">
+        <view class="flex items-center px-4 py-3 active:bg-black/[0.02]" @click="sourcesOpen = !sourcesOpen">
+          <icon-lucide-book-open :size="14" color="var(--token-text-secondary)" class="mr-2 shrink-0" />
+          <view class="flex-1 text-[13px] font-semibold text-[#111111]/70">数据来源与参考文献</view>
+          <icon-lucide-chevron-down
+            :size="16"
+            color="var(--token-text-tertiary)"
+            :class="sourcesOpen ? 'rotate-180 transition-transform' : 'transition-transform'"
+          />
+        </view>
+        <view v-if="sourcesOpen" class="px-4 pb-3.5 space-y-2 border-t border-[var(--token-border)] pt-3">
+          <view class="flex items-start">
+            <view class="text-xs mr-2 shrink-0 mt-0.5 text-text-tertiary">[1]</view>
+            <view class="text-xs text-text-secondary leading-relaxed">
+              中国营养学会.《中国居民膳食指南（2022）》. 人民卫生出版社, 2022.
+            </view>
+          </view>
+          <view class="flex items-start">
+            <view class="text-xs mr-2 shrink-0 mt-0.5 text-text-tertiary">[2]</view>
+            <view class="text-xs leading-relaxed">
+              <text class="text-text-secondary">中国营养学会膳食指南官方网站：</text>
+              <text class="underline" style="color: var(--token-info)" @tap="openGuidelineUrl">dg.cnsoc.org</text>
             </view>
           </view>
         </view>
@@ -85,23 +135,35 @@
 </template>
 
 <script setup lang="ts">
-import { useRecord } from '@/composables/useRuceriji'
 import { api } from '@/brick/lib/api'
+import { DateUtil } from '@/brick/lib/date-util'
+import { parseAiReport } from '@/brick/lib/ai-report'
 import { router } from '@/brick/lib/router'
+import { useRecord } from '@/composables/useRuceriji'
 import { onReady } from '@dcloudio/uni-app'
-import { reactive, toRefs } from 'vue'
+import { computed, reactive, ref, toRefs } from 'vue'
 
 defineOptions({ name: 'DetailAiPage' })
 
-const { lazyStyle, waitStyleReady, processRecord } = useRecord()
+const { processRecord } = useRecord()
 
 const state = reactive({
   id: 0,
   loading: true,
   record: { id: 0 },
-  response: { content: '' },
+  response: { content: '' } as any,
 })
 const { id, loading, record, response } = toRefs(state)
+const sourcesOpen = ref(false)
+
+const report = computed(() => parseAiReport(state.response))
+const hasStructure = computed(
+  () => report.value.score !== null || report.value.points.length > 0 || !!report.value.advice
+)
+
+const recordTimeText = computed(() => {
+  return state.record.time ? DateUtil.formatRecordTime(state.record.time) : ''
+})
 
 async function doLoad() {
   try {
@@ -128,3 +190,243 @@ onReady(() => {
   doLoad()
 })
 </script>
+
+<style lang="scss" scoped>
+.ai-body {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 664px;
+  margin: 0 auto;
+}
+
+.ai-badge {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: linear-gradient(140deg, var(--color-rc-ai) 0%, #6f3fb0 100%);
+  box-shadow: 0 4px 12px rgba(143, 89, 207, 0.28);
+}
+
+.ai-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--token-info);
+  background: var(--token-info-bg);
+}
+
+.ai-hero {
+  border-radius: 24px;
+  padding: 16px;
+  border: 1px solid rgba(143, 89, 207, 0.16);
+  background: linear-gradient(160deg, rgba(143, 89, 207, 0.08) 0%, rgba(143, 89, 207, 0.03) 45%, #ffffff 100%);
+  box-shadow: var(--shadow-card);
+}
+
+/* 评分卡 */
+.score-card {
+  margin-top: 12px;
+  padding: 18px 16px 16px;
+  border-radius: 24px;
+  background: #ffffff;
+  border: 1px solid var(--token-border);
+  box-shadow: var(--shadow-card);
+}
+
+.score-num {
+  font-size: 40px;
+  line-height: 1;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--token-text);
+  letter-spacing: -1px;
+}
+
+.score-unit {
+  margin-left: 4px;
+  align-self: flex-end;
+  padding-bottom: 2px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--token-text-secondary);
+}
+
+.score-level {
+  margin-left: 8px;
+  align-self: flex-end;
+  margin-bottom: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-rc-primary-text);
+  background: var(--color-rc-primary);
+}
+
+.score-meta {
+  font-size: 12px;
+  color: var(--token-text-secondary);
+}
+
+.score-track {
+  margin-top: 14px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(17, 17, 17, 0.08);
+  overflow: hidden;
+}
+
+.score-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #e8c93c 0%, var(--color-rc-primary) 70%);
+  transition: width 0.4s ease;
+}
+
+.score-summary {
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--token-text);
+}
+
+/* 维度要点 */
+.points-card {
+  margin-top: 12px;
+  border-radius: 24px;
+  background: #ffffff;
+  border: 1px solid var(--token-border);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.point-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--token-divider);
+
+  &.is-last {
+    border-bottom: none;
+  }
+}
+
+.point-label {
+  flex-shrink: 0;
+  width: 56px;
+  padding-top: 1px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--token-text-secondary);
+}
+
+.point-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.point-value {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--token-text);
+}
+
+.point-note {
+  margin-top: 2px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--token-text-secondary);
+}
+
+/* 建议 */
+.advice-card {
+  margin-top: 12px;
+  padding: 16px;
+  border-radius: 24px;
+  border: 1px solid var(--token-border);
+  background: linear-gradient(160deg, rgba(250, 224, 88, 0.16) 0%, #ffffff 70%);
+  box-shadow: var(--shadow-card);
+}
+
+.advice-title {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--token-text);
+}
+
+.advice-text {
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 1.75;
+  color: rgba(17, 17, 17, 0.8);
+}
+
+/* 空状态 */
+.empty-card {
+  margin-top: 12px;
+  padding: 32px 24px;
+  border-radius: 24px;
+  background: #ffffff;
+  border: 1px solid var(--token-border);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.empty-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 999px;
+  background: var(--token-panel);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-title {
+  margin-top: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--token-text);
+}
+
+.empty-desc {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--token-text-secondary);
+}
+
+/* 富文本正文（旧数据兜底） */
+.ai-content :deep(.rich-html-content) {
+  line-height: 1.8;
+  word-break: break-word;
+}
+
+.ai-content :deep(.rich-html-content p) {
+  margin: 0 0 10px;
+}
+
+.ai-content :deep(.rich-html-content p:last-child) {
+  margin-bottom: 0;
+}
+
+.ai-content :deep(.rich-html-content h1),
+.ai-content :deep(.rich-html-content h2),
+.ai-content :deep(.rich-html-content h3),
+.ai-content :deep(.rich-html-content h4) {
+  margin: 14px 0 6px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--token-text);
+}
+</style>

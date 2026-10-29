@@ -77,7 +77,8 @@ const props = defineProps({
 const emit = defineEmits(['on-load-more'])
 
 const state = reactive({
-  isInit: false,
+  // 默认为 true：接口失败时也要能落到空状态，避免整页空白
+  isInit: true,
   isNoMore: false,
 })
 const { isInit, isNoMore } = toRefs(state)

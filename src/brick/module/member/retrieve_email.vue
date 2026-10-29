@@ -6,12 +6,9 @@
         <view class="w-20 h-20 rounded-2xl bg-primary flex items-center justify-center mb-4">
           <icon-lucide-key-round :size="36" color="white" />
         </view>
-        <text class="text-2xl font-bold text-gray-800">找回密码</text>
-        <text class="text-sm text-gray-400 mt-1">邮箱验证找回密码</text>
+        <text class="text-base font-medium text-gray-600">邮箱验证找回密码</text>
       </view>
-      <u-steps :current="1" :active-color="activeColor">
-        <u-steps-item v-for="s in steps" :key="s.title" :title="s.title" :desc="s.desc" />
-      </u-steps>
+      <c-steps :current="1" :steps="steps" />
       <form>
         <view class="mb-4">
           <view class="bg-gray-100 rounded-full my-2 px-5 py-3 text-base">
@@ -21,7 +18,7 @@
         <view class="mb-4">
           <view class="bg-gray-100 rounded-full my-2 flex items-center px-4 py-2 text-base">
             <view class="flex-grow">
-              <input v-model="data.captcha" placeholder="输入图片验证" class="w-full text-base" />
+              <input v-model="data.captcha" placeholder="输入图片验证码" class="w-full text-base" />
             </view>
             <view class="flex-shrink-0">
               <c-smart-captcha ref="captchaRef" class="captcha" src="retrieve_captcha" />
@@ -65,7 +62,6 @@ import { api } from '@/brick/lib/api'
 import { router } from '@/brick/lib/router'
 import { onShow } from '@dcloudio/uni-app'
 import { reactive, ref, toRefs } from 'vue'
-import { SystemSetting } from '../../../config/setting'
 
 const delay = (cb: () => void, ms = 100) => setTimeout(cb, ms)
 
@@ -78,14 +74,9 @@ const state = reactive({
     captcha: '',
     verify: '',
   },
-  activeColor: SystemSetting.primaryColor,
-  steps: [
-    { title: '选择方式', desc: '找回密码方式' },
-    { title: '验证身份', desc: '验证本人信息' },
-    { title: '重置密码', desc: '重新设定新密码' },
-  ],
+  steps: [{ title: '选择方式' }, { title: '验证身份' }, { title: '重置密码' }],
 })
-const { isSubmitting, data, activeColor, steps } = toRefs(state)
+const { isSubmitting, data, steps } = toRefs(state)
 
 const captchaRef = ref<any>(null)
 

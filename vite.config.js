@@ -3,7 +3,7 @@ import { createRequire } from 'module'
 import path from 'path'
 import tailwindcss from 'tailwindcss'
 import { fileURLToPath } from 'url'
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import { UnifiedViteWeappTailwindcssPlugin as uvtw } from 'weapp-tailwindcss/vite'
 
 const _require = createRequire(import.meta.url)
@@ -27,14 +27,20 @@ const stripUiconFont = {
 }
 // stripUiconFont uses PostCSS 8 new API (postcssPlugin property); no .postcss = true needed
 
-const buildTime = new Date().toLocaleString('zh-CN', {
-  year: 'numeric', month: '2-digit', day: '2-digit',
-  hour: '2-digit', minute: '2-digit', hour12: false,
-}).replace(/\//g, '-')
+const buildTime = new Date()
+  .toLocaleString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  })
+  .replace(/\//g, '-')
 
 const now = new Date()
 const pad = (n) => String(n).padStart(2, '0')
-const buildVersion = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`
+const buildVersion = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`
 
 // Injects __BUILD_TIME__ and __BUILD_VERSION__ into app-service.js output for app-plus platform
 // (Vite define is not applied by the DCloud app-plus compiler)
@@ -62,41 +68,47 @@ const stripShadowPreload = {
 }
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  base: process.env.BUILD_TARGET === 'publish-pro' ? '/__X_BASE_X__/' : '/',
-  server: {
-    port: 21000,
-    strictPort: false,
-    proxy: {
-      '/api/': {
-        target: 'https://ruceriji.com',
-        changeOrigin: true,
-      }
-    }
-  },
-  plugins: [
-    stripShadowPreload,
-    injectBuildTime,
-    vitePluginUniIcons(),
-    uni(),
-    // uvtw 一定要放在 uni 后面；disabled 时在 H5/App 平台跳过转换
-    uvtw({
-      disabled: WeappTailwindcssDisabled,
-    }),
-  ],
-  define: {
-    __BUILD_TIME__: JSON.stringify(buildTime),
-    __BUILD_VERSION__: JSON.stringify(buildVersion),
-  },
-  css: {
-    // 内联 PostCSS 注册 tailwindcss（确保 tailwindcss JIT 正确扫描文件并生效）
-    postcss: {
-      plugins: [tailwindcss(), autoprefixer(), stripUiconFont],
-    },
-    preprocessorOptions: {
-      scss: {
-        silenceDeprecations: ['legacy-js-api', 'import'],
+export default defineConfig(({ mode }) => {
+  // 开发环境的接口域名由 .env.[mode].local 提供，代码里不放任何环境域名
+  const env = loadEnv(mode, process.cwd(), '')
+  const apiTarget = env.VITE_PROXY_TARGET || 'https://ruceriji.com'
+
+  return {
+    base: process.env.BUILD_TARGET === 'publish-pro' ? '/__X_BASE_X__/' : '/',
+    server: {
+      port: 21000,
+      strictPort: false,
+      proxy: {
+        '/api/': {
+          target: apiTarget,
+          changeOrigin: true,
+        },
       },
     },
-  },
+    plugins: [
+      stripShadowPreload,
+      injectBuildTime,
+      vitePluginUniIcons(),
+      uni(),
+      // uvtw 一定要放在 uni 后面；disabled 时在 H5/App 平台跳过转换
+      uvtw({
+        disabled: WeappTailwindcssDisabled,
+      }),
+    ],
+    define: {
+      __BUILD_TIME__: JSON.stringify(buildTime),
+      __BUILD_VERSION__: JSON.stringify(buildVersion),
+    },
+    css: {
+      // 内联 PostCSS 注册 tailwindcss（确保 tailwindcss JIT 正确扫描文件并生效）
+      postcss: {
+        plugins: [tailwindcss(), autoprefixer(), stripUiconFont],
+      },
+      preprocessorOptions: {
+        scss: {
+          silenceDeprecations: ['legacy-js-api', 'import'],
+        },
+      },
+    },
+  }
 })

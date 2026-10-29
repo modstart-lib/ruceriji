@@ -25,8 +25,19 @@ export const designTokens = {
     warning: '#faad14',
     /** 错误 / 危险 */
     error: '#ff4d4f',
-    /** 强调 */
-    accent: '#722ed1',
+    /** 信息 */
+    info: '#0b6bcb',
+    /** 强调（与 --color-rc-ai 保持一致，供 AI 相关场景使用） */
+    accent: '#8f59cf',
+
+    // ── 品牌强调 ─────────────────────────────────────────────────────
+    /** 品牌黄（--color-rc-primary） */
+    rcPrimary: '#fae058',
+    /** AI 紫（--color-rc-ai） */
+    rcAi: '#8f59cf',
+
+    // ── 图表色板（与 --chart-1..6 保持一致）──────────────────────────
+    chart: ['#111111', '#d9bc33', '#8f59cf', '#6b6b6b', '#a98e1f', '#c4c4c4'],
 
     // ── 页面背景（亮色）──────────────────────────────────────────────
     /** 页面底层背景 */
@@ -34,7 +45,7 @@ export const designTokens = {
     /** 卡片 / 区块背景 */
     panel: '#f9fafb',
     /** 页面灰底（与 body / page 背景一致） */
-    body: '#f8f8f8',
+    body: '#f7f8fa',
 
     // ── 页面背景（暗色）──────────────────────────────────────────────
     surfaceDark: '#111827',
@@ -44,6 +55,10 @@ export const designTokens = {
     /** 正文（亮色）：默认黑 #111111 */
     text: '#111111',
     textDark: '#f3f4f6',
+    /** 辅助文字（亮色）：4.5:1 以上，替代原来的 #949494 / #b0b0b0 */
+    textSecondary: '#6b6b6b',
+    /** 禁用态文字（亮色） */
+    textDisabled: '#b0b0b0',
   },
 } as const
 

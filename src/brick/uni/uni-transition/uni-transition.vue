@@ -31,8 +31,7 @@
 	 * @property {Object} styles 组件样式，同 css 样式，注意带’-‘连接符的属性需要使用小驼峰写法如：`backgroundColor:red`
 	 */
 	export default {
-		name: 'uniTransition',
-		emits: ['click', 'change'],
+		name: 'UniTransition',
 		props: {
 			show: {
 				type: Boolean,
@@ -63,6 +62,7 @@
 				default: false
 			},
 		},
+		emits: ['click', 'change'],
 		data() {
 			return {
 				isShow: false,
@@ -71,21 +71,6 @@
 				animationData: {},
 				durationTime: 300,
 				config: {}
-			}
-		},
-		watch: {
-			show: {
-				handler(newVal) {
-					if (newVal) {
-						this.open()
-					} else {
-						// 避免上来就执行 close,导致动画错乱
-						if (this.isShow) {
-							this.close()
-						}
-					}
-				},
-				immediate: true
 			}
 		},
 		computed: {
@@ -105,6 +90,21 @@
 			// 初始化动画条件
 			transformStyles() {
 				return 'transform:' + this.transform + ';' + 'opacity:' + this.opacity + ';' + this.stylesObject
+			}
+		},
+		watch: {
+			show: {
+				handler(newVal) {
+					if (newVal) {
+						this.open()
+					} else {
+						// 避免上来就执行 close,导致动画错乱
+						if (this.isShow) {
+							this.close()
+						}
+					}
+				},
+				immediate: true
 			}
 		},
 		created() {

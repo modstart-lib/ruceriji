@@ -56,10 +56,7 @@ export function useRecord() {
     const style: any[] = styleData.value
 
     const process = (item: Record<string, any>) => {
-      item['_duration'] = DateUtil.formatDuration(item['duration'], {
-        isMs: false,
-        format: item['duration'] > 3600 ? 'HH时mm分ss秒' : 'mm分ss秒',
-      })
+      item['_duration'] = DateUtil.formatDurationHuman(item['duration'], { isMs: false })
       item['_time'] = DateUtil.format(item['time'], 'HH:mm')
       for (const s of style) {
         if (!item[s.name]) continue

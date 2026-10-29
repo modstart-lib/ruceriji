@@ -9,9 +9,7 @@
         <text class="text-2xl font-bold text-gray-800">重置密码</text>
         <text class="text-sm text-gray-400 mt-1">设置您的新密码</text>
       </view>
-      <u-steps :current="2" :active-color="activeColor">
-        <u-steps-item v-for="s in steps" :key="s.title" :title="s.title" :desc="s.desc" />
-      </u-steps>
+      <c-steps :current="2" :steps="steps" />
 
       <form>
         <view class="mb-4">
@@ -52,7 +50,6 @@ import { dialog } from '@/brick/lib/dialog'
 import { router } from '@/brick/lib/router'
 import { onShow } from '@dcloudio/uni-app'
 import { reactive, toRefs } from 'vue'
-import { SystemSetting } from '../../../config/setting'
 
 const { ui, getPageDefaultTitle, autoSetNavigationBarColor, SystemConfig } = useUi()
 
@@ -63,14 +60,9 @@ const state = reactive({
     password: '',
     passwordRepeat: '',
   },
-  activeColor: SystemSetting.primaryColor,
-  steps: [
-    { title: '选择方式', desc: '找回密码方式' },
-    { title: '验证身份', desc: '验证本人信息' },
-    { title: '重置密码', desc: '重新设定新密码' },
-  ],
+  steps: [{ title: '选择方式' }, { title: '验证身份' }, { title: '重置密码' }],
 })
-const { isSubmitting, data, activeColor, steps } = toRefs(state)
+const { isSubmitting, data, steps } = toRefs(state)
 
 async function doSubmit() {
   state.isSubmitting = true

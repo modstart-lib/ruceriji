@@ -22,19 +22,21 @@
       </view>
     </c-modal>
     <c-image-preview ref="imagePreviewRef" image-ratio="2-3" :border="true" download="image.png" />
-    <bui-image-design ref="imageDesignRef" />
+    <!-- 海报画布会渲染到屏幕外，只在分享时挂载，避免常驻越界元素 -->
+    <bui-image-design v-if="designReady" ref="imageDesignRef" />
   </view>
 </template>
 
 <script setup lang="ts">
 import { api } from '@/brick/lib/api'
 import { dialog } from '@/brick/lib/dialog'
-import { reactive, ref, toRefs } from 'vue'
+import { nextTick, reactive, ref, toRefs } from 'vue'
 
 defineOptions({ name: 'AppAwardDetailDialog' })
 
 const state = reactive({
   award: null,
+  designReady: false,
 })
 const { award } = toRefs(state)
 
@@ -55,6 +57,8 @@ async function doShare() {
   modalRef.value.close()
   dialog.loadingOn('正在生成海报')
   const res = await api.post('app_award/share_config', { id: state.award.id })
+  state.designReady = true
+  await nextTick()
   const url = await imageDesignRef.value.render(res.data.imageConfig)
   dialog.loadingOff()
   imagePreviewRef.value.show(url, '下载分享海报')

@@ -32,10 +32,7 @@ const state = reactive({
 const { loading, data } = toRefs(state)
 
 const title = computed(() => {
-  if (state.loading) {
-    return '正在加载...'
-  }
-  return state.data.title
+  return state.data.title || '用户协议'
 })
 
 async function init() {
