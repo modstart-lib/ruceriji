@@ -11,6 +11,7 @@
 
 <script setup lang="ts">
 import { useAppBiz, useAppConfig, useAppUser } from '@/brick/composables/useAppStore'
+import { useBranding } from '@/brick/composables/useBranding'
 import { useShare } from '@/brick/composables/useShare'
 import { api } from '@/brick/lib/api'
 import { router } from '@/brick/lib/router'
@@ -27,6 +28,7 @@ defineOptions({ name: 'WcPage' })
 const { user, userInit, isLogin, waitUserReady, requireUserLogin, requireUserLoginRouteTo } = useAppUser()
 const { biz } = useAppBiz()
 const { config } = useAppConfig()
+const branding = useBranding()
 const { shareConfig, setShareConfig, getShareAppMessage, getShareTimeline } = useShare()
 
 const state = reactive({
@@ -42,8 +44,8 @@ const { status, member } = toRefs(state)
 
 const share = computed(() => {
   return {
-    title: config.value && config.value.Ruceriji_ShareTitle,
-    imageUrl: config.value && config.value.Ruceriji_ShareImage,
+    title: (config.value && config.value.Ruceriji_ShareTitle) || branding.value.siteName,
+    imageUrl: (config.value && config.value.Ruceriji_ShareImage) || branding.value.siteLogo,
   }
 })
 
@@ -193,13 +195,6 @@ watch(isLogin, (loggedIn) => {
     min-height: 104rpx !important;
     font-size: 32rpx !important;
     margin: 0 auto;
-  }
-
-  :deep(.btn-main) {
-    background: #111111;
-    color: #ffffff;
-    border: none !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   }
 
   :deep(.btn-main-same) {

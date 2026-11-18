@@ -150,7 +150,7 @@ import { dialog } from '@/brick/lib/dialog'
 import { EntryProcessorUtil } from '@/brick/lib/entry-processor'
 import { EventBus } from '@/brick/lib/event-bus'
 import { router } from '@/brick/lib/router'
-import { SystemSetting } from '@/config/setting'
+import { AppSetting, SystemSetting } from '@/config/setting'
 import { onShow } from '@dcloudio/uni-app'
 import { reactive, ref, toRefs } from 'vue'
 
@@ -343,7 +343,7 @@ function doBackHome() {
     router.back()
     return
   }
-  router.to('/pages/wc')
+  router.to(AppSetting.route.home)
 }
 
 onShow(() => {

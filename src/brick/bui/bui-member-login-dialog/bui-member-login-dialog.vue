@@ -3,7 +3,8 @@
     <view class="pb-2">
       <!-- 顶部品牌区 -->
       <view class="flex flex-col items-center py-4">
-        <view class="w-14 h-14 rounded-full bg-primary flex items-center justify-center mb-3">
+        <image v-if="branding.siteLogo" class="login-dialog-logo" mode="aspectFit" :src="branding.siteLogo" />
+        <view v-else class="w-14 h-14 rounded-full bg-primary flex items-center justify-center mb-3">
           <icon-lucide-sparkles :size="28" color="#ffffff" />
         </view>
         <text class="text-sm text-text-secondary">登录后享受更多功能</text>
@@ -76,6 +77,7 @@
 
 <script setup lang="ts">
 import { useConfig } from '@/brick/composables/useBaseStore'
+import { useBranding } from '@/brick/composables/useBranding'
 import { registerLoginDialog, unregisterLoginDialog } from '@/brick/composables/useLoginDialog'
 import { dialog } from '@/brick/lib/dialog'
 import { useLoginDialogPlatform } from '@/brick/lib/platform'
@@ -96,6 +98,7 @@ import LoginButtonsSim from './components/LoginButtonsSim.vue'
 defineOptions({ name: 'BuiMemberLoginDialog' })
 
 const { config } = useConfig()
+const branding = useBranding()
 
 const modalRef = ref<any>(null)
 const agreeChecked = ref(false)
@@ -163,6 +166,12 @@ function doWechatMiniProgramLogin() {
 </script>
 
 <style lang="less" scoped>
+.login-dialog-logo {
+  width: 180px;
+  height: 32px;
+  margin-bottom: 12px;
+}
+
 .bui-member-login-dialog {
   background: rgba(0, 0, 0, 0.5);
   position: fixed;

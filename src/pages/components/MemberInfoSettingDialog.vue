@@ -1,29 +1,23 @@
 <template>
   <c-modal ref="modalRef" title="完善信息" width="90%">
     <view class="px-4 py-4">
-      <!-- 性别选择 -->
-      <view class="flex justify-center gap-8 mb-5">
-        <view class="text-center" @click="gender = 'male'">
-          <view
-            class="w-24 h-24 shadow rounded-xl flex items-center justify-center cursor-pointer"
-            :class="{ 'bg-yellow-100': gender === 'male' }"
-          >
-            <view class="w-20 h-20">
-              <c-image-static src="/static/image/male_avatar.png" />
+      <!-- 性别选择：透明底娃娃，选中用黄描边光圈，不做整块发黄的方框 -->
+      <view class="gender-row">
+        <view class="gender-option" :class="{ active: gender === 'male' }" @click="gender = 'male'">
+          <view class="gender-doll">
+            <view class="gender-doll-inner">
+              <c-image-static src="/static/image/male_nobg_640.png" />
             </view>
           </view>
-          <view class="mt-1 text-sm">男</view>
+          <view class="gender-label">男</view>
         </view>
-        <view class="text-center" @click="gender = 'female'">
-          <view
-            class="w-24 h-24 shadow rounded-xl flex items-center justify-center cursor-pointer"
-            :class="{ 'bg-yellow-100': gender === 'female' }"
-          >
-            <view class="w-20 h-20">
-              <c-image-static src="/static/image/female_avatar.png" />
+        <view class="gender-option" :class="{ active: gender === 'female' }" @click="gender = 'female'">
+          <view class="gender-doll">
+            <view class="gender-doll-inner">
+              <c-image-static src="/static/image/female_nobg_640.png" />
             </view>
           </view>
-          <view class="mt-1 text-sm">女</view>
+          <view class="gender-label">女</view>
         </view>
       </view>
 
@@ -64,7 +58,7 @@
       />
 
       <u-button type="primary" shape="circle" :block="true" @click="doSubmit">
-        <icon-lucide-check :size="20" color="#fff" />
+        <icon-lucide-check :size="20" color="var(--token-action-text)" />
         <text class="ml-2">保存</text>
       </u-button>
       <view class="mt-3 text-center text-tertiary text-xs flex items-center justify-center">
@@ -177,3 +171,61 @@ defineExpose({
   show,
 })
 </script>
+
+<style lang="scss" scoped>
+.gender-row {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  margin-bottom: 20px;
+}
+
+.gender-option {
+  width: 104px;
+  text-align: center;
+  transition: opacity 0.15s ease;
+
+  .gender-doll {
+    width: 104px;
+    height: 104px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--token-panel);
+    transition:
+      box-shadow 0.15s ease,
+      background-color 0.15s ease;
+  }
+
+  /* 图是 640×640 透明底全身娃娃，内缩一圈让脚与圆环之间留白 */
+  .gender-doll-inner {
+    width: 92px;
+    height: 92px;
+  }
+
+  .gender-label {
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--token-text-secondary);
+  }
+
+  /* 未选中：降不透明 + 降饱和，靠“亮起来”表达选中 */
+  &:not(.active) .gender-doll {
+    opacity: 0.55;
+    filter: grayscale(50%);
+  }
+
+  &.active .gender-doll {
+    background: rgba(250, 224, 88, 0.18);
+    box-shadow:
+      0 0 0 2px var(--token-action),
+      0 8px 20px rgba(250, 224, 88, 0.35);
+  }
+
+  &.active .gender-label {
+    color: var(--token-text);
+    font-weight: 700;
+  }
+}
+</style>

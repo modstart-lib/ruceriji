@@ -12,8 +12,9 @@ export default tseslint.config(
       '**/*.d.ts',
       // 第三方嵌入组件，不参与 lint
       'src/brick/bui/bui-image-design/xinyu-canvas-drawer/**',
-      'src/pages_data/components/echarts/**',
       'src/pages_data/components/xiaohe-echarts/**',
+      // 由 scripts/build-echarts.mjs 生成的 ECharts 打包产物，不参与 lint
+      'src/pages_data/components/echarts/*.esm.js',
       'src/brick/uni/uni-easyinput/**',
       'src/brick/uni/uni-icons/**',
       'src/brick/uni/uni-calendar/**',

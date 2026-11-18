@@ -45,14 +45,10 @@
               :custom-style="{
                 width: '560rpx',
                 margin: '0 auto',
-                background: '#111111',
-                color: '#ffffff',
-                border: 'none',
-                boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
               }"
               @click="doSuccess"
             >
-              <icon-lucide-check :size="20" color="#fff" />
+              <icon-lucide-check :size="20" color="var(--token-action-text)" />
               <text class="ml-2">拉完了</text>
             </u-button>
             <view class="wc-actions-second-row mt-4 w-full flex items-center justify-center">
@@ -95,7 +91,7 @@
         </view>
         <view class="border-t border-gray-100 px-5 pb-5 pt-4">
           <u-button type="primary" shape="circle" class="w-full" @click="cancelPopup = false">
-            <icon-lucide-refresh-cw :size="18" color="#fff" />
+            <icon-lucide-refresh-cw :size="18" color="var(--token-action-text)" />
             <text class="ml-2">我还想再试试</text>
           </u-button>
           <view class="mt-3 py-2 text-center text-sm text-gray-500 active:opacity-70" @click="doFail">
@@ -196,13 +192,6 @@ onMounted(() => {
   min-height: 52px !important;
   font-size: 16px !important;
   margin: 0 auto;
-}
-
-.btn-main {
-  background: #111111;
-  color: #ffffff;
-  border: none !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .btn-main-same {

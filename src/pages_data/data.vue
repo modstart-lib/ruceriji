@@ -253,6 +253,8 @@ function buildAllStyleCharts(styleChart: Record<string, any>) {
       // 样本量小，保留两位小数属于过度精确，统一取整
       item.percent = total ? Math.round((item.value / total) * 100) : 0
     }
+    // 先降序再上色：图例的色点与环图扇区必须一一对应
+    items.sort((a: any, b: any) => b.value - a.value)
     result.push({
       name: s.name,
       title: s.title,
@@ -276,10 +278,9 @@ onLoad(() => {
       color 0.15s ease;
 
     &.is-active {
-      background: #ffffff;
+      background: var(--token-chip-active-bg);
       color: var(--token-text);
-      font-weight: 600;
-      box-shadow: var(--shadow-chip);
+      font-weight: 700;
     }
   }
 

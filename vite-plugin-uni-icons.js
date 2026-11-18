@@ -2,6 +2,10 @@
 // H5:   <span v-html="...">  —— 内联 SVG，CSS currentColor / text-* 自动继承
 // 非H5: <view :style="...">  —— background-image: url(data:image/svg+xml,...) URL 编码
 // 用法: <icon-lucide-activity /> <icon-lucide-user :size="20" color="#ff0000" />
+//
+// 生成物 src/icons/lucide/ 是提交物（easycom 按文件路径解析），插件在 buildStart 自动对齐。
+// 手动：node vite-plugin-uni-icons.js          补齐 / 清理生成物
+//       node vite-plugin-uni-icons.js --check  只校验是否漂移，不写文件
 
 const fs = require('fs')
 const path = require('path')
@@ -9,7 +13,6 @@ const path = require('path')
 const ROOT = path.resolve(__dirname)
 const OUT_DIR = path.join(ROOT, 'src/icons/lucide')
 const TOKEN_LESS = path.join(ROOT, 'src/config/token.less')
-const TOKEN_COLORS_FILE = path.join(OUT_DIR, '_token-colors.js')
 
 /**
  * 亮色主题下 `--token-*` 的实际色值。
@@ -69,7 +72,8 @@ function readTokenColors() {
   return colors
 }
 
-function writeTokenColors() {
+/** 生成 _token-colors.js 的源码，与磁盘内容比较后决定是否写入。 */
+function buildTokenColors() {
   const colors = readTokenColors()
   const rows = Object.entries(colors)
     .map(([name, value]) => `  '${name}': '${value}',`)
@@ -88,8 +92,7 @@ export function resolveIconColor(color) {
   return TOKEN_COLORS[ref[1]] || (ref[2] || '').trim()
 }
 `
-  fs.writeFileSync(TOKEN_COLORS_FILE, source, 'utf8')
-  return Object.keys(colors).length
+  return { source, count: Object.keys(colors).length }
 }
 
 // IconLucideChevronRight → chevron-right
@@ -182,37 +185,88 @@ function scanUsedIcons() {
   return used
 }
 
-function generate() {
-  if (!fs.existsSync(OUT_DIR)) fs.mkdirSync(OUT_DIR, { recursive: true })
+/**
+ * 期望的生成物：文件名 → 内容。图标按源码引用现算，token 色值来自 token.less，
+ * 内容都是确定的，因此可以逐文件比对，只写变化的部分。
+ */
+function buildOutputs() {
+  const { source: tokenSource, count: tokenCount } = buildTokenColors()
+  const outputs = new Map([['_token-colors.js', tokenSource]])
+  const unknown = []
+  for (const fullName of scanUsedIcons()) {
+    const svg = getSvg(fullName.replace(/^icon-lucide-/, ''))
+    if (!svg) unknown.push(fullName)
+    else outputs.set(fullName + '.vue', makeSfc(svg))
+  }
+  return { outputs, tokenCount, unknown }
+}
 
-  for (const f of fs.readdirSync(OUT_DIR)) {
-    if (f.endsWith('.vue')) fs.unlinkSync(path.join(OUT_DIR, f))
+/**
+ * 让 src/icons/lucide 与源码引用保持一致：
+ * 只写缺失 / 内容过期的文件，只删已无引用的旧图标，其余文件不碰（不动 mtime，构建不产生噪音）。
+ * check 模式只报告不写入，返回值表示是否一致；普通模式返回 false 表示有引用找不到图标。
+ */
+function syncIcons({ check = false } = {}) {
+  if (!check && !fs.existsSync(OUT_DIR)) fs.mkdirSync(OUT_DIR, { recursive: true })
+
+  const { outputs, tokenCount, unknown } = buildOutputs()
+  const existing = fs.existsSync(OUT_DIR)
+    ? fs.readdirSync(OUT_DIR).filter((f) => f.endsWith('.vue'))
+    : []
+
+  const orphans = existing.filter((f) => !outputs.has(f)).sort()
+  const added = []
+  const changed = []
+  for (const [file, content] of outputs) {
+    const full = path.join(OUT_DIR, file)
+    if (!fs.existsSync(full)) added.push(file)
+    else if (fs.readFileSync(full, 'utf8') !== content) changed.push(file)
+  }
+  const iconCount = outputs.size - 1
+
+  if (check) {
+    if (orphans.length + added.length + changed.length + unknown.length === 0) {
+      console.log(`[uni-icons] ${iconCount} 个图标与源码引用一致`)
+      return true
+    }
+    console.error(
+      [
+        `[uni-icons] 生成物与源码引用不一致（源码引用 ${iconCount} 个图标）:`,
+        ...added.map((f) => `  缺失  src/icons/lucide/${f}`),
+        ...changed.map((f) => `  过期  src/icons/lucide/${f}`),
+        ...orphans.map((f) => `  多余  src/icons/lucide/${f}（已无引用，需删除）`),
+        ...unknown.map((f) => `  未找到 ${f}（@iconify-json/lucide 没有这个图标）`),
+        '  执行 npm run icons 修复后重新提交',
+      ].join('\n')
+    )
+    return false
   }
 
-  const usedIcons = scanUsedIcons()
-  console.log(`[uni-icons] Scanning... found ${usedIcons.size} used icons`)
-
-  const tokenCount = writeTokenColors()
-  console.log(`[uni-icons] Token colors → src/icons/lucide/_token-colors.js (${tokenCount})`)
-
-  let count = 0
-  const missing = []
-  for (const fullName of usedIcons) {
-    const iconKebab = fullName.replace(/^icon-lucide-/, '')
-    const svg = getSvg(iconKebab)
-    if (!svg) { missing.push(fullName); continue }
-    fs.writeFileSync(path.join(OUT_DIR, fullName + '.vue'), makeSfc(svg), 'utf8')
-    count++
+  for (const file of orphans) fs.unlinkSync(path.join(OUT_DIR, file))
+  for (const file of [...added, ...changed]) {
+    fs.writeFileSync(path.join(OUT_DIR, file), outputs.get(file), 'utf8')
   }
-  if (missing.length) console.warn('[uni-icons] Icons not found:', missing.join(', '))
-  console.log(`[uni-icons] Generated ${count} icons → src/icons/lucide/`)
+  if (unknown.length) {
+    console.warn(`[uni-icons] 图标不存在（@iconify-json/lucide）: ${unknown.join(', ')}`)
+  }
+  console.log(
+    `[uni-icons] ${iconCount} 个图标 / ${tokenCount} 个 token 色值 → src/icons/lucide/` +
+      `（写入 ${added.length + changed.length}，删除 ${orphans.length}）`
+  )
+  return unknown.length === 0
 }
 
 module.exports = function vitePluginUniIcons() {
   return {
     name: 'vite-plugin-uni-icons',
-    buildStart: generate,
+    buildStart: () => {
+      syncIcons()
+    },
   }
 }
 
-module.exports.generate = generate
+module.exports.sync = syncIcons
+
+if (require.main === module) {
+  process.exit(syncIcons({ check: process.argv.includes('--check') }) ? 0 : 1)
+}

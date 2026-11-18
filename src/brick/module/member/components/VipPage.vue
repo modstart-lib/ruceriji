@@ -155,6 +155,7 @@ import { api } from '@/brick/lib/api'
 import { dialog } from '@/brick/lib/dialog'
 import { router } from '@/brick/lib/router'
 import MemberVoucherSelector from '@/brick/module/member_voucher/MembetVoucherSelector.vue'
+import { AppSetting } from '@/config/setting'
 import { computed, onMounted, onUnmounted, reactive, ref, toRefs } from 'vue'
 
 defineOptions({ name: 'VipPage' })
@@ -305,7 +306,7 @@ async function doSubmit() {
     const res = await api.post('member_vip/buy', {
       vipId: state.vipActiveId,
       voucherId: state.voucherId,
-      redirect: router.pathToUrl('/pages/member'),
+      redirect: router.pathToUrl(AppSetting.route.member),
     })
     dialog.loadingOff()
     router.to(`/brick/module/pay_center/pay?order=${res.data.orderSecretId}`)

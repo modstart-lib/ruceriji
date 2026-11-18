@@ -118,11 +118,21 @@ page {
   color: var(--color-primary) !important;
 }
 
-/* 覆盖 uview-plus u-button primary 主题色（默认蓝色 #3c9cff → 项目主色，所有平台生效） */
+/* 覆盖 uview-plus u-button primary 主题色（默认蓝色 #3c9cff → 品牌黄 + 深字，所有平台生效）
+   组件自带的 scoped 规则里带 !important，页面级 custom-style 抢不过，所以统一在这里收口 */
 .u-button--primary {
-  background-color: var(--color-primary) !important;
-  border-color: var(--color-primary) !important;
-  color: #ffffff !important;
+  background-color: var(--token-action) !important;
+  border-color: transparent !important;
+  color: var(--token-action-text) !important;
+  box-shadow: var(--token-action-shadow);
+}
+
+/* 禁用态退回浅灰，避免半透明黄被误读成可点 */
+.u-button--primary.u-button--disabled {
+  background-color: var(--token-chip-bg) !important;
+  border-color: transparent !important;
+  color: var(--token-text-disabled) !important;
+  box-shadow: none;
 }
 
 /* 覆盖 UniApp / uvue 原生 button 默认样式（H5 专用选择器） */

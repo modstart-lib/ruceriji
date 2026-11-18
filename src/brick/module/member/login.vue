@@ -3,12 +3,13 @@
     <c-page-header ref="header" title="用户登录" :shadow="false"></c-page-header>
     <view v-if="!pageLoading" class="login-body bg-white min-h-screen">
       <view class="login-head">
-        <view class="login-logo">
+        <image v-if="branding.siteLogo" class="login-logo-image" mode="aspectFit" :src="branding.siteLogo" />
+        <view v-else class="login-logo">
           <icon-lucide-sparkles :size="34" color="white" />
         </view>
-        <text class="login-brand">如厕日记</text>
-        <text class="login-title">欢迎回来</text>
-        <text class="login-subtitle">登录后同步记录、成就与 AI 分析</text>
+        <text v-if="!branding.siteLogo" class="login-brand">{{ branding.siteName }}</text>
+        <text class="login-title">{{ $t('app.loginWelcome') }}</text>
+        <text class="login-subtitle">{{ $t('app.loginSubtitle') }}</text>
       </view>
       <view class="mb-4">
         <view class="login-input">
@@ -82,6 +83,7 @@
 /* 登录页：品牌头 + 描边输入框，输入框按 DESIGN §2.3 使用 12px 圆角 */
 import { Starter } from '@/brick/BrickUni'
 import { useAppUser } from '@/brick/composables/useAppStore'
+import { useBranding } from '@/brick/composables/useBranding'
 import { useConfig, useUi } from '@/brick/composables/useBaseStore'
 import { api } from '@/brick/lib/api'
 import { dialog } from '@/brick/lib/dialog'
@@ -98,6 +100,7 @@ const delay = (cb: () => void, ms = 100) => setTimeout(cb, ms)
 const { user, userInit, isLogin, waitUserReady, requireUserLogin, requireUserLoginRouteTo } = useAppUser()
 const { config, SystemConfig } = useConfig()
 const { ui, getPageDefaultTitle, autoSetNavigationBarColor } = useUi()
+const branding = useBranding()
 
 const state = reactive({
   pageLoading: true,
@@ -197,6 +200,13 @@ onReady(() => {
   flex-direction: column;
   align-items: center;
   margin-bottom: 28px;
+}
+
+/* 后台配置了网站 Logo 时显示横版图，未配置时保留圆形品牌头 */
+.login-logo-image {
+  width: 220px;
+  height: 48px;
+  margin-bottom: 12px;
 }
 
 .login-logo {

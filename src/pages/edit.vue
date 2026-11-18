@@ -63,14 +63,8 @@
 
     <!-- 底部保存按钮 -->
     <view class="bottom-bar fixed bottom-0 left-0 right-0 z-50">
-      <u-button
-        type="primary"
-        shape="circle"
-        :block="true"
-        :custom-style="{ background: '#111111', color: '#ffffff', border: 'none', fontWeight: 'bold' }"
-        @click="doSubmit"
-      >
-        <icon-lucide-check :size="20" color="#fff" />
+      <u-button type="primary" shape="circle" :block="true" :custom-style="{ fontWeight: 'bold' }" @click="doSubmit">
+        <icon-lucide-check :size="20" color="var(--token-action-text)" />
         <text class="ml-2">保存</text>
       </u-button>
     </view>

@@ -46,6 +46,7 @@ import { useUi } from '@/brick/composables/useBaseStore'
 import { api } from '@/brick/lib/api'
 import { dialog } from '@/brick/lib/dialog'
 import { router } from '@/brick/lib/router'
+import { AppSetting } from '@/config/setting'
 import { onReady } from '@dcloudio/uni-app'
 import { computed, reactive, toRefs } from 'vue'
 
@@ -80,7 +81,7 @@ async function doSubmit() {
   try {
     const res = await api.post('member_money/charge/submit', {
       money: state.data.money,
-      redirect: router.pathToUrl('/pages/member'),
+      redirect: router.pathToUrl(AppSetting.route.member),
     })
     dialog.loadingOff()
     router.to(`/brick/module/pay_center/pay?order=${res.data.orderSecretId}`)
@@ -173,9 +174,9 @@ onReady(() => {
     border: 1px solid transparent;
 
     &.is-active {
-      background: var(--token-surface);
-      border-color: var(--token-primary);
-      font-weight: 600;
+      background: var(--token-chip-active-bg);
+      border-color: transparent;
+      font-weight: 700;
     }
   }
 }

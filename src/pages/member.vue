@@ -1,8 +1,8 @@
 <template>
   <view class="min-h-screen relative pb-6 bg-[var(--token-body)]">
-    <bui-member-center-top-b>
+    <MemberCenterTop>
       <c-page-header-trans title="我的" :has-back="false" :float="false" color="#111111" />
-    </bui-member-center-top-b>
+    </MemberCenterTop>
 
     <!-- 用户数据统计卡片（未登录时数据无意义，不展示占位 "-"） -->
     <view
@@ -153,6 +153,7 @@
 
 <script setup lang="ts">
 import { Starter } from '@/brick/BrickUni'
+import { useBranding } from '@/brick/composables/useBranding'
 import { useConfig, useUi } from '@/brick/composables/useBaseStore'
 import { useShare } from '@/brick/composables/useShare'
 import { useUser } from '@/brick/composables/useUser'
@@ -161,11 +162,13 @@ import { useWcAsset } from '@/composables/useRuceriji'
 import { onReady } from '@dcloudio/uni-app'
 import { computed, ref } from 'vue'
 import MemberInfoSettingDialog from './components/MemberInfoSettingDialog.vue'
+import MemberCenterTop from '@/components/MemberCenterTop.vue'
 
 defineOptions({ name: 'MemberPage' })
 
 const { user, userInit, requireUserLogin, requireUserLoginRouteTo } = useUser()
 const { config, SystemConfig } = useConfig()
+const branding = useBranding()
 const { ui, getPageDefaultTitle, autoSetNavigationBarColor } = useUi()
 const { shareConfig, setShareConfig, getShareAppMessage, getShareTimeline } = useShare()
 const { biz } = useWcAsset()
@@ -174,8 +177,8 @@ const memberInfoSettingDialog = ref<any>(null)
 
 const share = computed(() => {
   return {
-    title: config.value && config.value.Ruceriji_ShareTitle,
-    imageUrl: config.value && config.value.Ruceriji_ShareImage,
+    title: (config.value && config.value.Ruceriji_ShareTitle) || branding.value.siteName,
+    imageUrl: (config.value && config.value.Ruceriji_ShareImage) || branding.value.siteLogo,
     path: '/pages/wc',
   }
 })

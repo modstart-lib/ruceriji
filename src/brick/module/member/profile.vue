@@ -4,7 +4,10 @@
 
     <view class="p-2">
       <view class="profile-head" @tap="router.to('/brick/module/member/profile_avatar')">
-        <image class="profile-head__avatar" mode="aspectFill" :src="user.avatar || '/static/image/male_avatar.png'" />
+        <image v-if="user.avatar" class="profile-head__avatar" mode="aspectFill" :src="user.avatar" />
+        <view v-else class="profile-head__avatar profile-head__avatar--empty">
+          <icon-lucide-user :size="26" />
+        </view>
         <view class="profile-head__main">
           <text class="profile-head__name">{{ user.nickname || user.username || '未设置昵称' }}</text>
           <text class="profile-head__hint">点击更换头像</text>
@@ -174,6 +177,13 @@ onShow(() => {
     flex-shrink: 0;
     border-radius: 50%;
     background: var(--token-panel);
+  }
+
+  &__avatar--empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--token-text-tertiary);
   }
 
   &__main {

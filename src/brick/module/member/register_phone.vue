@@ -87,6 +87,7 @@ import { useConfig, useUi } from '@/brick/composables/useBaseStore'
 import { api } from '@/brick/lib/api'
 import { EventBus } from '@/brick/lib/event-bus'
 import { router } from '@/brick/lib/router'
+import { AppSetting } from '@/config/setting'
 import { onShow } from '@dcloudio/uni-app'
 import { reactive, ref, toRefs } from 'vue'
 
@@ -145,7 +146,7 @@ function verifySendError() {
 
 async function doSubmit() {
   state.isSubmitting = true
-  const redirect = router.getQuery('redirect', '/pages/home')
+  const redirect = router.getQuery('redirect', AppSetting.route.home)
   delay(async () => {
     try {
       await api.post('register_phone', Object.assign(state.data, state.captchaData))

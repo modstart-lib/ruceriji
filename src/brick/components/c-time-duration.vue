@@ -5,9 +5,9 @@
   <uni-popup ref="popupRef" type="bottom" background-color="#fff" border-radius="16px 16px 0 0">
     <view class="p-4">
       <view class="flex items-center justify-between mb-3">
-        <text style="color: #999999" @click="onCancel">取消</text>
-        <text style="color: #111111; font-weight: bold">选择时长</text>
-        <text style="color: #111111; font-weight: bold" @click="onConfirm">确定</text>
+        <text style="color: var(--token-text-tertiary)" @click="onCancel">取消</text>
+        <text style="color: var(--token-text); font-weight: bold">选择时长</text>
+        <text style="color: var(--token-text); font-weight: bold" @click="onConfirm">确定</text>
       </view>
       <picker-view style="height: 200rpx; width: 100%" :value="pickerIndex" @change="onPickerChange">
         <picker-view-column>

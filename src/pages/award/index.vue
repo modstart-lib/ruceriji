@@ -143,10 +143,9 @@ onReady(() => {
 
 .award-tab {
   .is-active {
-    background: #ffffff;
+    background: var(--token-chip-active-bg);
     color: var(--token-text);
-    font-weight: 600;
-    box-shadow: var(--shadow-chip);
+    font-weight: 700;
   }
 
   box-sizing: border-box;
@@ -260,7 +259,7 @@ onReady(() => {
   justify-content: center;
   font-size: 14px;
   font-weight: 600;
-  color: #ffffff;
-  background: #111111;
+  color: var(--token-action-text);
+  background: var(--token-action);
 }
 </style>

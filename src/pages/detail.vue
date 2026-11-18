@@ -100,8 +100,8 @@
 
     <view class="bottom-bar fixed bottom-0 right-0 left-0 z-50">
       <view
-        class="flex text-white h-12 px-4 rounded-full items-center justify-center shadow-cta active:scale-95 transition-transform font-bold text-base"
-        style="background-color: #111111"
+        class="flex text-[#3f3200] h-12 px-4 rounded-full items-center justify-center shadow-cta active:scale-95 transition-transform font-bold text-base"
+        style="background-color: var(--token-action); box-shadow: var(--token-action-shadow)"
         @click="resultScanRef?.start(record.id)"
       >
         <view

@@ -20,10 +20,6 @@
           <view v-else class="item-text">{{ o.label }}</view>
           <!-- 图片选项没有文字时，用户无法判断图标的含义，补一行短标签 -->
           <view v-if="o.image && o.label" class="item-caption">{{ o.label }}</view>
-          <!-- 选中态不只靠底色：描边 + 勾选，色弱与灰度打印也能分辨 -->
-          <view v-if="modelValue === o.value" class="item-check">
-            <icon-lucide-check :size="10" color="#ffffff" />
-          </view>
         </view>
       </view>
     </view>
@@ -145,35 +141,19 @@ function doSelect(value) {
     white-space: nowrap;
   }
 
-  /* 选中：白底 + 2px 黑描边 + 右上角勾选 */
+  /* 选中：浅品牌黄底 + 字重加深（亮度与彩度双变化，不用勾选也不用黑描边） */
   &.active {
     background-color: var(--token-chip-active-bg);
-    box-shadow:
-      inset 0 0 0 2px var(--token-chip-active-border),
-      var(--shadow-chip);
 
     .item-text {
       color: var(--token-text);
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .item-caption {
       color: var(--token-text);
-      font-weight: 600;
+      font-weight: 700;
     }
-  }
-
-  .item-check {
-    position: absolute;
-    top: 3px;
-    right: 3px;
-    width: 14px;
-    height: 14px;
-    border-radius: 999px;
-    background: var(--token-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 }
 </style>

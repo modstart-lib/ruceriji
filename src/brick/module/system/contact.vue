@@ -7,12 +7,12 @@
         <text class="pb-system-contact__intro-text">如需帮助或商务合作，可通过以下方式与我们取得联系</text>
       </view>
 
-      <view v-if="config.siteLogo || config.siteSlogan" class="pb-system-contact__hero mb-4">
+      <view v-if="branding.siteLogo || branding.siteSlogan" class="pb-system-contact__hero mb-4">
         <view class="pb-system-contact__hero-inner">
-          <view v-if="config.siteLogo" class="pb-system-contact__logo-wrap">
-            <image class="pb-system-contact__logo" mode="widthFix" :src="config.siteLogo" />
+          <view v-if="branding.siteLogo" class="pb-system-contact__logo-wrap">
+            <image class="pb-system-contact__logo" mode="widthFix" :src="branding.siteLogo" />
           </view>
-          <text v-if="config.siteSlogan" class="pb-system-contact__slogan">{{ config.siteSlogan }}</text>
+          <text v-if="branding.siteSlogan" class="pb-system-contact__slogan">{{ branding.siteSlogan }}</text>
         </view>
       </view>
 
@@ -99,7 +99,7 @@
 
 <script setup lang="ts">
 import { Starter } from '@/brick/BrickUni'
-import { useConfig } from '@/brick/composables/useBaseStore'
+import { useBranding } from '@/brick/composables/useBranding'
 import { api } from '@/brick/lib/api'
 import { dialog } from '@/brick/lib/dialog'
 import { onReady } from '@dcloudio/uni-app'
@@ -107,7 +107,7 @@ import { computed, reactive, toRefs } from 'vue'
 
 defineOptions({ name: 'Contact' })
 
-const { config } = useConfig()
+const branding = useBranding()
 
 const state = reactive({
   loading: true,

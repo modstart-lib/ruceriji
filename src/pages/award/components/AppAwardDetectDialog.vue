@@ -8,7 +8,7 @@
       <view class="text-center text-muted mt-2">{{ award.summary }}</view>
       <view class="mt-6">
         <u-button type="primary" shape="circle" :block="true" @click="close">
-          <icon-lucide-check :size="20" color="#fff" />
+          <icon-lucide-check :size="20" color="var(--token-action-text)" />
           <text class="ml-2">我知道了</text>
         </u-button>
       </view>

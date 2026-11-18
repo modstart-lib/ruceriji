@@ -63,16 +63,23 @@ page {
   /* 选择器 / 分段控件 */
   --token-chip-bg: #f4f4f5;
   --token-chip-border: rgba(0, 0, 0, 0.06);
-  --token-chip-active-bg: #ffffff;
-  --token-chip-active-border: #111111;
+  /* 选中态：浅品牌黄 + 字重加深，不靠勾选与黑描边 */
+  --token-chip-active-bg: #faedc3;
+  --token-chip-active-border: rgba(250, 224, 88, 0.9);
 
-  /* 图表色板：明度分层，保证灰度打印与色弱也能区分 */
-  --chart-1: #111111;
-  --chart-2: #d9bc33;
-  --chart-3: #8f59cf;
-  --chart-4: #6b6b6b;
-  --chart-5: #a98e1f;
-  --chart-6: #c4c4c4;
+  /* 动作色：主按钮 / 当前项高亮（黄底深字，12:1） */
+  --token-action: #fae058;
+  --token-action-hover: #f3d63c;
+  --token-action-text: #3f3200;
+  --token-action-shadow: 0 8px 24px rgba(250, 224, 88, 0.38);
+
+  /* 图表色板：暖色为主、明度分层，前 4 色两两可分，第 5、6 色只做兜底 */
+  --chart-1: #fae058;
+  --chart-2: #c99a3c;
+  --chart-3: #7a5f2e;
+  --chart-4: #9a9a9a;
+  --chart-5: #ead9a6;
+  --chart-6: #d5d5d5;
 
   /* 阴影：统一 rgba 写法（4 参数 rgb 在部分 WebView 会被丢弃） */
   --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.02);
@@ -155,15 +162,21 @@ page {
   --token-divider: rgba(255, 255, 255, 0.08);
   --token-chip-bg: #262626;
   --token-chip-border: rgba(255, 255, 255, 0.08);
-  --token-chip-active-bg: #111827;
-  --token-chip-active-border: #f3f4f6;
+  --token-chip-active-bg: rgba(250, 224, 88, 0.26);
+  --token-chip-active-border: rgba(250, 224, 88, 0.9);
 
-  --chart-1: #f3f4f6;
-  --chart-2: #d9bc33;
-  --chart-3: #b18ce8;
-  --chart-4: #a3a3a3;
-  --chart-5: #a98e1f;
-  --chart-6: #525252;
+  /* 动作色在暗色下保持品牌黄 */
+  --token-action: #fae058;
+  --token-action-hover: #f3d63c;
+  --token-action-text: #3f3200;
+  --token-action-shadow: 0 8px 24px rgba(250, 224, 88, 0.24);
+
+  --chart-1: #fae058;
+  --chart-2: #e0b45a;
+  --chart-3: #a9822f;
+  --chart-4: #7a7a7a;
+  --chart-5: #c9c9c9;
+  --chart-6: #f3e2b0;
 
   --token-glass: rgba(31, 41, 55, 0.7);
   --token-glass-hover: rgba(31, 41, 55, 0.9);

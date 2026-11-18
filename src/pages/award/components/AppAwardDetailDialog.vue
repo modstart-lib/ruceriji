@@ -15,7 +15,7 @@
             <text class="ml-2">未获得</text>
           </u-button>
           <u-button v-else type="primary" shape="circle" :block="true" @click="doShare">
-            <icon-lucide-share-2 :size="20" color="#fff" />
+            <icon-lucide-share-2 :size="20" color="var(--token-action-text)" />
             <text class="ml-2">立即分享</text>
           </u-button>
         </view>

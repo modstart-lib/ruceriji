@@ -3,7 +3,8 @@
 </template>
 
 <script setup lang="ts">
-import * as echarts from './echarts/echarts.esm.min.js'
+// Pie-only echarts bundle kept inside this subpackage, see scripts/build-echarts.mjs
+import echarts from './echarts/echarts.pie.esm.js'
 import { provideEcharts } from './xiaohe-echarts/shared-core.js'
 import UniEcharts from './xiaohe-echarts/components/uni-echarts/uni-echarts.vue'
 

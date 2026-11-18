@@ -34,7 +34,7 @@
     </button>
     <button class="w-full after:border-none mt-3 login-account-btn" hover-class="opacity-80" @tap="emit('account')">
       <view class="flex flex-row items-center justify-center" style="height: 48px">
-        <icon-lucide-user :size="18" color="#111111" />
+        <icon-lucide-user :size="18" color="var(--token-text)" />
         <text class="login-btn-text login-account-text">账号密码登录</text>
       </view>
     </button>

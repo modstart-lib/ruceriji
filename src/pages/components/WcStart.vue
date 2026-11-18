@@ -16,7 +16,7 @@
         <view class="wc-inner">
           <view class="wc-top-block wc-motion-t1">
             <view class="wc-top-status">
-              <view class="wc-status-pill wc-status-pill--muted"> 如厕日记 </view>
+              <view class="wc-status-pill wc-status-pill--muted"> {{ branding.siteName }} </view>
             </view>
             <view class="wc-top-headline">
               <view
@@ -58,14 +58,10 @@
               :custom-style="{
                 width: '560rpx',
                 margin: '0 auto',
-                background: '#111111',
-                color: '#ffffff',
-                border: 'none',
-                boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
               }"
               @click="$emit('start')"
             >
-              <icon-lucide-play :size="20" color="#fff" />
+              <icon-lucide-play :size="20" color="var(--token-action-text)" />
               <text class="ml-2">开始便便</text>
             </u-button>
             <view class="wc-actions-second-placeholder" />
@@ -78,6 +74,7 @@
 
 <script setup lang="ts">
 import { useAppUser } from '@/brick/composables/useAppStore'
+import { useBranding } from '@/brick/composables/useBranding'
 import { useWcAsset } from '@/composables/useRuceriji'
 import { onMounted, reactive, toRefs, watch } from 'vue'
 
@@ -85,6 +82,8 @@ defineOptions({
   name: 'WcStart',
   options: { virtualHost: true },
 })
+
+const branding = useBranding()
 
 const props = defineProps({
   member: {
@@ -181,12 +180,5 @@ onMounted(() => {
   min-height: 52px !important;
   font-size: 16px !important;
   margin: 0 auto;
-}
-
-.btn-main {
-  background: #111111;
-  color: #ffffff;
-  border: none !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 </style>

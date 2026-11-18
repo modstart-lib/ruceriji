@@ -24,6 +24,7 @@
 
 <script setup lang="ts">
 defineOptions({ name: 'CEmpty' })
+defineEmits(['action'])
 
 const props = defineProps({
   small: {

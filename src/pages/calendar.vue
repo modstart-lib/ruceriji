@@ -83,7 +83,7 @@
 
     <!-- 补充记录：全页唯一主操作，位置固定 -->
     <view class="record-fab" @click="goAddCustomRecord">
-      <icon-lucide-plus :size="26" color="#ffffff" />
+      <icon-lucide-plus :size="26" color="var(--token-action-text)" />
     </view>
 
     <MemberInfoSettingDialog auto-show />
@@ -94,6 +94,7 @@
 
 <script setup lang="ts">
 import { useAppConfig, useAppUser } from '@/brick/composables/useAppStore'
+import { useBranding } from '@/brick/composables/useBranding'
 import { useShare } from '@/brick/composables/useShare'
 import { api } from '@/brick/lib/api'
 import { DateUtil } from '@/brick/lib/date-util'
@@ -122,6 +123,7 @@ function goAddCustomRecord() {
   requireUserLoginRouteTo('/pages/edit', { type: 'custom' }, true)
 }
 const { config } = useAppConfig()
+const branding = useBranding()
 const { shareConfig, setShareConfig, getShareAppMessage, getShareTimeline } = useShare()
 const { recordChanged, setRecordChanged } = useRuceriji()
 const { lazyStyle, waitStyleReady, processRecord } = useRecord()
@@ -176,8 +178,8 @@ const currentMonthLabel = computed(() => `${state.year}年${state.month}月`)
 
 const share = computed(() => {
   return {
-    title: config.value && config.value.Ruceriji_ShareTitle,
-    imageUrl: config.value && config.value.Ruceriji_ShareImage,
+    title: (config.value && config.value.Ruceriji_ShareTitle) || branding.value.siteName,
+    imageUrl: (config.value && config.value.Ruceriji_ShareImage) || branding.value.siteLogo,
   }
 })
 
@@ -583,18 +585,26 @@ onShow(() => {
     :deep(.uni-calendar-item--checked) {
       background-color: transparent !important;
       border-radius: 0;
+      /* 组件默认 opacity: .8，会把品牌黄压成灰黄，这里恢复不透明 */
+      opacity: 1;
     }
 
-    /* 选中（含今天被选中）：实心黑圆 */
+    /* 选中（含今天被选中）：黄实心圆 + 深色数字，次数交给下方记录列表 */
     :deep(.uni-calendar-item--isDay .uni-calendar-item__weeks-box-item),
     :deep(.uni-calendar-item--checked .uni-calendar-item__weeks-box-item) {
-      background-color: #111111;
+      background-color: var(--token-action);
       border-radius: 50%;
+      padding-bottom: 0;
+    }
+
+    :deep(.uni-calendar-item--isDay .uni-calendar-item__count),
+    :deep(.uni-calendar-item--checked .uni-calendar-item__count) {
+      display: none;
     }
 
     /* 今天但未选中：细描边 + 加粗，与选中态一眼可分 */
     :deep(.uni-calendar-item--today .uni-calendar-item__weeks-box-item) {
-      border: 1.5px solid rgba(17, 17, 17, 0.5);
+      border: 1.5px solid rgba(17, 17, 17, 0.35);
       border-radius: 50%;
     }
 
@@ -611,10 +621,10 @@ onShow(() => {
       color: var(--token-text-secondary) !important;
     }
 
-    /* 只有「选中」才反白，避免今天未选中时白字消失 */
+    /* 只有「选中」才用深字，避免今天未选中时白字消失 */
     :deep(.uni-calendar-item--isDay .uni-calendar-item__weeks-box-text),
     :deep(.uni-calendar-item--checked .uni-calendar-item__weeks-box-text) {
-      color: #ffffff !important;
+      color: var(--token-action-text) !important;
     }
 
     /* 圆点在窄屏会压住日期数字，记录次数改由下方点阵承载（不依赖颜色） */
@@ -664,8 +674,8 @@ onShow(() => {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: #111111;
-    box-shadow: 0 12px 24px -10px rgba(17, 17, 17, 0.5);
+    background: var(--token-action);
+    box-shadow: var(--token-action-shadow);
     transition: transform 0.15s ease;
 
     &:active {

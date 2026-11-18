@@ -29,27 +29,60 @@
 
       <!-- 结构化结果（新数据 / 可从历史 HTML 解析时） -->
       <template v-if="hasStructure">
-        <view v-if="report.score !== null || report.summary" class="score-card">
-          <view class="score-head">
-            <view class="flex items-end">
-              <text class="score-num">{{ report.score !== null ? report.score : '--' }}</text>
-              <text class="score-unit">/ 100</text>
-              <view v-if="report.level" class="score-level">{{ report.level }}</view>
-            </view>
-            <view v-if="report.meta" class="score-meta flex items-center">
-              <icon-lucide-timer :size="12" class="mr-1" />
-              {{ report.meta }}
+        <!-- 建议放在最前：打开只看懂怎么改进，评分与维度作为依据在后 -->
+        <view v-if="adviceItems.length" class="advice-card">
+          <view class="advice-title">
+            <icon-lucide-lightbulb :size="14" class="mr-1.5" />
+            AI 建议
+          </view>
+          <view v-if="adviceItems.length === 1" class="advice-text">{{ adviceItems[0] }}</view>
+          <view v-else class="advice-list">
+            <view v-for="(item, index) in adviceItems" :key="index" class="advice-item">
+              <text class="advice-index">{{ index + 1 }}</text>
+              <text class="advice-item-text">{{ item }}</text>
             </view>
           </view>
-
-          <view v-if="report.score !== null" class="score-track">
-            <view class="score-fill" :style="{ width: `${report.score}%` }" />
-          </view>
-
-          <view v-if="report.summary" class="score-summary">{{ report.summary }}</view>
         </view>
 
-        <!-- 要点：维度 + 结果 + 说明 -->
+        <view v-if="report.score !== null || report.summary || report.meta || report.trend" class="score-card">
+          <template v-if="report.score !== null">
+            <view class="score-head">
+              <view class="flex items-end">
+                <text class="score-num">{{ report.score }}</text>
+                <text class="score-unit">/ 100</text>
+                <view v-if="report.level" class="score-level">{{ report.level }}</view>
+              </view>
+              <view v-if="report.meta" class="score-meta flex items-center">
+                <icon-lucide-timer :size="12" class="mr-1" />
+                {{ report.meta }}
+              </view>
+            </view>
+            <view class="score-track">
+              <view class="score-fill" :style="{ width: `${report.score}%` }" />
+            </view>
+          </template>
+
+          <view
+            v-if="report.score === null && report.meta"
+            class="score-meta flex items-center"
+            :class="{ 'mb-2': report.summary }"
+          >
+            <icon-lucide-timer :size="12" class="mr-1" />
+            {{ report.meta }}
+          </view>
+
+          <view v-if="report.summary" class="score-summary" :class="{ 'is-lead': report.score === null }">
+            {{ report.summary }}
+          </view>
+
+          <!-- 最近 7 天趋势：数值对比，配合上方评分一起看 -->
+          <view v-if="report.trend" class="score-trend">
+            <icon-lucide-trending-up :size="12" class="mr-1 shrink-0" />
+            <text class="min-w-0">{{ report.trend }}</text>
+          </view>
+        </view>
+
+        <!-- 维度：AI 对本次记录的判读 -->
         <view v-if="report.points.length" class="points-card">
           <view
             v-for="(point, index) in report.points"
@@ -63,15 +96,6 @@
               <view v-if="point.note" class="point-note">{{ point.note }}</view>
             </view>
           </view>
-        </view>
-
-        <!-- 建议 -->
-        <view v-if="report.advice" class="advice-card">
-          <view class="advice-title">
-            <icon-lucide-lightbulb :size="14" class="mr-1.5" />
-            今日建议
-          </view>
-          <view class="advice-text">{{ report.advice }}</view>
         </view>
       </template>
 
@@ -137,7 +161,7 @@
 <script setup lang="ts">
 import { api } from '@/brick/lib/api'
 import { DateUtil } from '@/brick/lib/date-util'
-import { parseAiReport } from '@/brick/lib/ai-report'
+import { parseAiReport } from '@/lib/ai-report'
 import { router } from '@/brick/lib/router'
 import { useRecord } from '@/composables/useRuceriji'
 import { onReady } from '@dcloudio/uni-app'
@@ -158,8 +182,10 @@ const sourcesOpen = ref(false)
 
 const report = computed(() => parseAiReport(state.response))
 const hasStructure = computed(
-  () => report.value.score !== null || report.value.points.length > 0 || !!report.value.advice
+  () => report.value.score !== null || report.value.points.length > 0 || report.value.advices.length > 0
 )
+
+const adviceItems = computed(() => report.value.advices)
 
 const recordTimeText = computed(() => {
   return state.record.time ? DateUtil.formatRecordTime(state.record.time) : ''
@@ -291,6 +317,24 @@ onReady(() => {
   font-size: 14px;
   line-height: 1.7;
   color: var(--token-text);
+
+  /* 没有评分时这一句就是卡片唯一内容，不再留上方间距 */
+  &.is-lead {
+    margin-top: 0;
+  }
+}
+
+/* 近 7 天趋势：比总评低一级，读作「数据」而不是结论 */
+.score-trend {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  padding: 7px 10px;
+  border-radius: 12px;
+  background: var(--token-panel);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--token-text-secondary);
 }
 
 /* 维度要点 */
@@ -343,13 +387,13 @@ onReady(() => {
   color: var(--token-text-secondary);
 }
 
-/* 建议 */
+/* 建议：整页最先读到的内容，黄色渐变底 + 条目化 */
 .advice-card {
   margin-top: 12px;
   padding: 16px;
   border-radius: 24px;
-  border: 1px solid var(--token-border);
-  background: linear-gradient(160deg, rgba(250, 224, 88, 0.16) 0%, #ffffff 70%);
+  border: 1px solid rgba(250, 224, 88, 0.5);
+  background: linear-gradient(160deg, rgba(250, 224, 88, 0.22) 0%, #ffffff 72%);
   box-shadow: var(--shadow-card);
 }
 
@@ -362,10 +406,46 @@ onReady(() => {
 }
 
 .advice-text {
-  margin-top: 6px;
-  font-size: 14px;
+  margin-top: 8px;
+  font-size: 15px;
   line-height: 1.75;
-  color: rgba(17, 17, 17, 0.8);
+  color: rgba(17, 17, 17, 0.86);
+}
+
+.advice-list {
+  margin-top: 8px;
+}
+
+.advice-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+
+  & + .advice-item {
+    margin-top: 8px;
+  }
+}
+
+.advice-index {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 3px;
+  border-radius: 999px;
+  background: var(--token-action);
+  color: var(--token-action-text);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+}
+
+.advice-item-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(17, 17, 17, 0.86);
 }
 
 /* 空状态 */

@@ -42,6 +42,7 @@ export const AppSetting = {
   primaryColor: '#111111',
   route: {
     home: '/pages/wc',
+    member: '/pages/member',
     login: '/brick/module/member/login',
     tabBar: ['/pages/wc', '/pages/calendar', '/pages/member'],
     authIgnores: [

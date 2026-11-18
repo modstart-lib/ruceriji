@@ -1,4 +1,9 @@
 export default {
+  app: {
+    name: '如厕日记',
+    loginWelcome: '欢迎回来',
+    loginSubtitle: '登录后同步记录、成就与 AI 分析',
+  },
   system: {
     setting: '系统设置',
     permissionSetting: '权限设置',

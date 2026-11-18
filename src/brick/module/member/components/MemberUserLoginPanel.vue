@@ -15,7 +15,7 @@
               <slot>
                 <view class="profile">
                   <view v-if="userInit && !user.id" @click="requireUserLogin(() => {}, true)"> 点击登录 </view>
-                  <view v-else @click="router.to('/pages/member')"> 会员中心 </view>
+                  <view v-else @click="router.to(AppSetting.route.member)"> 会员中心 </view>
                 </view>
               </slot>
             </view>
@@ -119,6 +119,7 @@ import { api } from '@/brick/lib/api'
 import { dialog } from '@/brick/lib/dialog'
 import { EventBus } from '@/brick/lib/event-bus'
 import { router } from '@/brick/lib/router'
+import { AppSetting } from '@/config/setting'
 import { useUserStore } from '@/store/user'
 import { reactive, ref, toRefs } from 'vue'
 

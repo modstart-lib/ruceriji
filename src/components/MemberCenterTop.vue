@@ -21,16 +21,12 @@
           class="w-[88px] h-[88px] rounded-full border-[4px] border-white/90 shadow-[0_4px_16px_rgba(0,0,0,0.06)] overflow-hidden bg-gray-100 flex items-center justify-center active:scale-95 transition-transform"
           @click="router.to('/brick/module/member/profile_avatar')"
         >
-          <image
-            class="w-full h-full block object-cover"
-            :src="user.avatar || '/static/image/male_avatar.png'"
-            mode="aspectFill"
-          />
+          <image class="w-full h-full block object-cover" :src="user.avatar || genderAvatar" mode="aspectFill" />
         </view>
         <!-- 信息 -->
         <view class="mt-3.5 flex flex-col items-center">
           <view
-            class="text-xl font-bold text-[#111111] leading-tight active:opacity-70 transition-opacity text-center flex items-center justify-center"
+            class="text-xl font-bold text-token-text leading-tight active:opacity-70 transition-opacity text-center flex items-center justify-center"
             @click="router.to('/brick/module/member/profile')"
           >
             {{ user.nickname || user.username || '用户' }}
@@ -55,10 +51,10 @@
         <view
           class="w-[88px] h-[88px] rounded-full border-[4px] border-white/90 shadow-[0_4px_16px_rgba(0,0,0,0.06)] overflow-hidden bg-gray-200/80 flex items-center justify-center"
         >
-          <image class="w-full h-full block object-cover" :src="user.avatar" mode="aspectFill" />
+          <image class="w-full h-full block object-cover" :src="user.avatar || genderAvatar" mode="aspectFill" />
         </view>
         <view class="mt-3.5 flex flex-col items-center">
-          <view class="text-xl font-bold text-[#111111] leading-tight mb-3 flex items-center justify-center">
+          <view class="text-xl font-bold text-token-text leading-tight mb-3 flex items-center justify-center">
             登录 / 注册
           </view>
           <view
@@ -75,6 +71,7 @@
 <script setup lang="ts">
 import { showLoginDialog } from '@/brick/composables/useLoginDialog'
 import { router } from '@/brick/lib/router'
+import { useBizStore } from '@/store/app'
 import { useUserStore } from '@/store/user'
 import { onShow } from '@dcloudio/uni-app'
 import { computed } from 'vue'
@@ -83,6 +80,12 @@ defineOptions({ name: 'MemberCenterTop' })
 
 const user = computed(() => {
   return useUserStore().user
+})
+
+/** 没上传头像时按性别取娃娃，用户选过男/女就能在「我的」看到本人 */
+const genderAvatar = computed(() => {
+  const biz = useBizStore().biz
+  return biz && biz.gender === 'female' ? '/static/image/female_avatar.png' : '/static/image/male_avatar.png'
 })
 
 function doLogin() {
