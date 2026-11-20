@@ -116,7 +116,6 @@
           open-type="share"
           class="px-4 py-3.5 flex items-center bg-transparent text-left m-0 rounded-none border-b border-gray-100/30 active:bg-gray-50/50 transition-colors after:border-none"
           style="line-height: inherit; color: inherit"
-          @click="doShare"
         >
           <view class="w-6 flex-shrink-0 text-[#111111] opacity-70 flex items-center"
             ><icon-lucide-share-2 :size="20"
@@ -135,6 +134,9 @@
           <view class="flex-shrink-0 text-gray-300"><icon-lucide-chevron-right :size="16" /></view>
         </view>
         <!-- #endif -->
+        <!-- #ifdef APP-PLUS || H5 -->
+        <ShareEntry @tap="openShare" />
+        <!-- #endif -->
         <view
           class="px-4 py-3.5 flex items-center active:bg-gray-50/50 transition-colors"
           @click="router.to('/brick/module/system/setting')"
@@ -148,6 +150,9 @@
 
     <bui-member-login-dialog ref="memberLoginDialog" />
     <MemberInfoSettingDialog ref="memberInfoSettingDialog" />
+    <!-- #ifdef APP-PLUS || H5 -->
+    <ShareSheet ref="shareSheet" />
+    <!-- #endif -->
   </view>
 </template>
 
@@ -155,7 +160,6 @@
 import { Starter } from '@/brick/BrickUni'
 import { useBranding } from '@/brick/composables/useBranding'
 import { useConfig, useUi } from '@/brick/composables/useBaseStore'
-import { useShare } from '@/brick/composables/useShare'
 import { useUser } from '@/brick/composables/useUser'
 import { router } from '@/brick/lib/router'
 import { useWcAsset } from '@/composables/useRuceriji'
@@ -163,6 +167,13 @@ import { onReady } from '@dcloudio/uni-app'
 import { computed, ref } from 'vue'
 import MemberInfoSettingDialog from './components/MemberInfoSettingDialog.vue'
 import MemberCenterTop from '@/components/MemberCenterTop.vue'
+// #ifdef MP-WEIXIN
+import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
+// #endif
+// #ifdef APP-PLUS || H5
+import ShareEntry from '@/components/ShareEntry.vue'
+import ShareSheet from '@/components/ShareSheet.vue'
+// #endif
 
 defineOptions({ name: 'MemberPage' })
 
@@ -170,10 +181,10 @@ const { user, userInit, requireUserLogin, requireUserLoginRouteTo } = useUser()
 const { config, SystemConfig } = useConfig()
 const branding = useBranding()
 const { ui, getPageDefaultTitle, autoSetNavigationBarColor } = useUi()
-const { shareConfig, setShareConfig, getShareAppMessage, getShareTimeline } = useShare()
 const { biz } = useWcAsset()
 
 const memberInfoSettingDialog = ref<any>(null)
+const shareSheet = ref<any>(null)
 
 const share = computed(() => {
   return {
@@ -191,9 +202,22 @@ function doOpenMemberSetting() {
 
 function onContact() {}
 
-function doShare() {
-  uni.showShareMenu({ menus: ['shareAppMessage', 'shareTimeline'] })
+function openShare() {
+  shareSheet.value?.show()
 }
+
+// #ifdef MP-WEIXIN
+onShareAppMessage(() => ({
+  title: share.value.title,
+  path: share.value.path,
+  imageUrl: share.value.imageUrl,
+}))
+
+onShareTimeline(() => ({
+  title: share.value.title,
+  imageUrl: share.value.imageUrl,
+}))
+// #endif
 
 onReady(() => {
   Starter.boot()

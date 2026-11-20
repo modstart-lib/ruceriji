@@ -24,7 +24,8 @@
         "modules" : {
             "VideoPlayer" : {},
             "OAuth" : {},
-            "Camera" : {}
+            "Camera" : {},
+            "Share" : {}
         },
         "softinput" : {
             "mode" : "adjustPan"
@@ -107,6 +108,12 @@
                     "unipush" : {}
                 },
                 "ad" : {},
+                "share" : {
+                    "weixin" : {
+                        "appid" : "",
+                        "UniversalLinks" : "https://ruceriji.com/app/"
+                    }
+                },
                 "oauth" : {
                     "weixin" : {
                         "appid" : "",
